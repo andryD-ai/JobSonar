@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="app_title">Job Market Radar & AI Synthesizer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Marked.js for markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .prose h1 { font-size: 1.8rem; font-weight: 700; margin-top: 1.2rem; margin-bottom: 0.8rem; color: #10b981; }
+    .prose h2 { font-size: 1.4rem; font-weight: 600; margin-top: 1.2rem; margin-bottom: 0.6rem; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
+    .prose h3 { font-size: 1.15rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.4rem; color: #fbbf24; }
+    .prose p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .prose ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 0.75rem; }
+    .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .prose th, .prose td { border: 1px solid #334155; padding: 8px 12px; text-align: left; }
+    .prose th { background-color: #1e293b; color: #e2e8f0; font-weight: 600; }
+    .prose tr:nth-child(even) { background-color: rgba(30, 41, 59, 0.4); }
+    .prose blockquote { border-left: 4px solid #10b981; padding-left: 1rem; color: #94a3b8; font-style: italic; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <i class="fa-solid fa-radar text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent" data-i18n="app_title">
+            Job Market Radar & AI Synthesizer
+          </h1>
+          <p class="text-xs text-slate-400" data-i18n="app_subtitle">ITviec • CareerViet • Remotive (100% Remote) • TopCV • JoyWork • LinkedIn • FlexJobs • Glassdoor • Gemini AI</p>
+        </div>
+      </div>
+
+      <!-- Action buttons & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-2.5">
+        
+        <!-- Language Switcher Dropdown (EN / VI / RU) -->
+        <div class="relative inline-block text-left" id="lang-switcher-container">
+          <button id="lang-dropdown-btn" onclick="toggleLangMenu()" class="px-2.5 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center space-x-1.5 transition">
+            <span id="current-lang-flag">🇬🇧</span>
+            <span id="current-lang-code" class="uppercase font-bold">EN</span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 ml-0.5"></i>
+          </button>
+          <div id="lang-dropdown-menu" class="hidden absolute right-0 mt-1.5 w-36 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-1 z-50 text-xs">
+            <button onclick="setLanguage('en')" class="w-full text-left px-3 py-2 text-slate-200 hover:bg-slate-800 flex items-center justify-between transition">
+              <span class="flex items-center space-x-2"><span>🇬🇧</span><span>English</span></span>
+              <span id="check-lang-en" class="text-emerald-400 text-xs"><i class="fa-solid fa-check"></i></span>
+            </button>
+            <button onclick="setLanguage('vi')" class="w-full text-left px-3 py-2 text-slate-200 hover:bg-slate-800 flex items-center justify-between transition">
+              <span class="flex items-center space-x-2"><span>🇻🇳</span><span>Tiếng Việt</span></span>
+              <span id="check-lang-vi" class="hidden text-emerald-400 text-xs"><i class="fa-solid fa-check"></i></span>
+            </button>
+            <button onclick="setLanguage('ru')" class="w-full text-left px-3 py-2 text-slate-200 hover:bg-slate-800 flex items-center justify-between transition">
+              <span class="flex items-center space-x-2"><span>🇷🇺</span><span>Русский</span></span>
+              <span id="check-lang-ru" class="hidden text-emerald-400 text-xs"><i class="fa-solid fa-check"></i></span>
+            </button>
+          </div>
+        </div>
+
+        <button onclick="switchTab('config')" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center space-x-1.5 transition">
+          <i class="fa-solid fa-sliders text-amber-400"></i>
+          <span class="hidden sm:inline" data-i18n="btn_config_sources">Configure Sources</span>
+        </button>
+        <button onclick="openCrawlModal()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 flex items-center space-x-1.5 transition">
+          <i class="fa-solid fa-plus"></i>
+          <span data-i18n="btn_crawl_new">Crawl New Jobs</span>
+        </button>
+        <button onclick="openReportModal()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 flex items-center space-x-1.5 transition">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span data-i18n="btn_ai_report">AI Market Report</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs & Stats bar -->
+  <div class="bg-slate-900/60 border-b border-slate-800/80 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 py-2">
+      <!-- Tabs -->
+      <div class="flex space-x-2 text-sm font-medium">
+        <button onclick="switchTab('jobs')" id="tab-btn-jobs" class="px-4 py-2 rounded-lg bg-slate-800 text-emerald-400 font-semibold border border-emerald-500/30 flex items-center space-x-2">
+          <i class="fa-solid fa-briefcase"></i>
+          <span><span data-i18n="tab_jobs">Job Explorer</span> (<span id="stat-total-jobs-badge">0</span>)</span>
+        </button>
+        <button onclick="switchTab('reports')" id="tab-btn-reports" class="px-4 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center space-x-2 transition">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span><span data-i18n="tab_reports">AI Reports</span> (<span id="stat-total-reports-badge">0</span>)</span>
+        </button>
+        <button onclick="switchTab('config')" id="tab-btn-config" class="px-4 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center space-x-2 transition">
+          <i class="fa-solid fa-sliders"></i>
+          <span><span data-i18n="tab_config">Sources Config</span> (<span id="stat-total-sources-badge">0</span>)</span>
+        </button>
+      </div>
+
+      <!-- Live Quick Stats -->
+      <div id="stats-banner" class="flex items-center space-x-4 text-xs text-slate-400 overflow-x-auto py-1">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Task Notification Banner -->
+  <div id="task-banner" class="hidden bg-indigo-950/80 border-b border-indigo-700/50 px-4 py-2.5 text-xs text-indigo-200">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-circle-notch fa-spin text-indigo-400"></i>
+        <span id="task-message" data-i18n="task_processing">Processing background task...</span>
+      </div>
+      <span class="text-indigo-400 text-[10px]" data-i18n="task_auto_update">Auto-refreshes in a few seconds</span>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- TAB 1: JOBS EXPLORER -->
+    <div id="view-jobs" class="space-y-6">
+      
+      <!-- Filter Bar -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
+        <!-- Main Filter Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5">
+          
+          <!-- Search input -->
+          <div class="sm:col-span-2 lg:col-span-4 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+            <input type="text" id="filter-keyword" list="popular-titles-datalist" 
+              placeholder="Search by title, company, skills..." data-i18n-placeholder="search_placeholder"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              oninput="debounceSearch()"
+              onkeydown="if(event.key==='Enter') { clearTimeout(searchDebounceTimer); loadJobs(1); }">
+            <datalist id="popular-titles-datalist">
+              <option value="AI Engineer"></option>
+              <option value="Data Engineer"></option>
+              <option value="Python Developer"></option>
+              <option value="Backend Developer"></option>
+              <option value="Frontend Developer"></option>
+              <option value="Fullstack Developer"></option>
+              <option value="DevOps Engineer"></option>
+              <option value="Data Scientist"></option>
+              <option value="Machine Learning"></option>
+              <option value="Mobile Developer"></option>
+              <option value="Golang Developer"></option>
+              <option value="Java Developer"></option>
+            </datalist>
+          </div>
+
+          <!-- 1. Loại công việc (Job Type) -->
+          <div class="lg:col-span-2">
+            <select id="filter-job-type" onchange="loadJobs(1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="all">💼 All Job Types</option>
+              <option value="full_time">💼 Full-time</option>
+              <option value="intern">🎓 Intern / Fresher</option>
+              <option value="contract">📝 Contract / Freelance</option>
+              <option value="part_time">⏱️ Part-time</option>
+            </select>
+          </div>
+
+          <!-- 2. Nơi công việc triển khai (Deployment Region) -->
+          <div class="lg:col-span-2">
+            <select id="filter-region" onchange="loadJobs(1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="all">📍 All Locations</option>
+              <option value="hanoi">🏛️ Hanoi & North</option>
+              <option value="hcm">🏙️ HCMC & South</option>
+              <option value="danang">🏖️ Da Nang & Central</option>
+              <option value="global">🌍 Global / Worldwide</option>
+            </select>
+          </div>
+
+          <!-- 3. Mô hình làm việc (Workplace Mode) -->
+          <div class="lg:col-span-2">
+            <select id="filter-workplace-mode" onchange="loadJobs(1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="all">🏢 All Work Modes</option>
+              <option value="onsite">🏢 On-site (Office)</option>
+              <option value="hybrid">🔄 Hybrid</option>
+              <option value="remote">🌐 Remote / Online</option>
+            </select>
+          </div>
+
+          <!-- 4. Nguồn tuyển dụng (Source) + Reset -->
+          <div class="lg:col-span-2 flex space-x-1.5">
+            <select id="filter-source" onchange="loadJobs(1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="all">🌐 All Sources</option>
+              <option value="itviec">ITviec</option>
+              <option value="careerviet">CareerViet</option>
+              <option value="remotive">Remotive</option>
+              <option value="topcv">TopCV</option>
+              <option value="joywork">JoyWork</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="flexjobs">FlexJobs</option>
+              <option value="glassdoor">Glassdoor</option>
+              <option value="facebook">Facebook</option>
+            </select>
+            <button onclick="resetFilters()" title="Reset filters" data-i18n-title="filter_reset_tooltip" class="px-3 bg-slate-950 hover:bg-slate-800 text-slate-400 rounded-xl border border-slate-800 transition">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Secondary Controls & Counter -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/60 gap-2">
+          <div class="flex items-center space-x-4 flex-wrap gap-y-1.5">
+            <label class="flex items-center space-x-2 cursor-pointer select-none">
+              <input type="checkbox" id="filter-has-salary" onchange="loadJobs(1)" class="rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500">
+              <span data-i18n="filter_has_salary">Public salary only</span>
+            </label>
+            <label class="flex items-center space-x-1.5 cursor-pointer select-none text-cyan-400 font-medium">
+              <input type="checkbox" id="filter-is-remote" onchange="loadJobs(1)" class="rounded bg-slate-950 border-slate-700 text-cyan-500 focus:ring-cyan-500">
+              <i class="fa-solid fa-house-laptop text-xs"></i>
+              <span data-i18n="filter_is_remote">Remote / Online only</span>
+            </label>
+          </div>
+          <div>
+            <span data-i18n="filter_found">Found:</span> <span id="jobs-count-text" class="font-bold text-emerald-400">0</span> <span data-i18n="filter_jobs_count">job postings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs Grid -->
+      <div id="jobs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination-bar" class="flex items-center justify-between py-4 text-sm text-slate-400">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 2: REPORTS VIEWER -->
+    <div id="view-reports" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-slate-100" data-i18n="reports_title">AI Market Intelligence Reports</h2>
+          <p class="text-sm text-slate-400" data-i18n="reports_subtitle">Synthesized and analyzed by Google Gemini AI</p>
+        </div>
+        <button onclick="openReportModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold shadow-md flex items-center space-x-2 transition">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span data-i18n="btn_generate_report">Generate New Report</span>
+        </button>
+      </div>
+
+      <div id="reports-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 3: SOURCES CONFIGURATION -->
+    <div id="view-config" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div>
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-100" data-i18n="config_title">Job Sources Configuration</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1.5 max-w-2xl" data-i18n="config_subtitle">
+            Enable or disable sources flexibly. Add custom job sources and configure endpoints according to your needs.
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="openAddSourceModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-emerald-600/20 flex items-center space-x-2 transition">
+            <i class="fa-solid fa-plus"></i>
+            <span data-i18n="btn_add_source">Add New Source</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Stats of Sources -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-xs text-slate-500 block" data-i18n="config_stat_total">Total Sources</span>
+          <span id="config-stat-total" class="text-xl font-bold text-slate-200">0</span>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-xs text-slate-500 block" data-i18n="config_stat_active">Active</span>
+          <span id="config-stat-active" class="text-xl font-bold text-emerald-400">0</span>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-xs text-slate-500 block" data-i18n="config_stat_rec">Recommended</span>
+          <span id="config-stat-rec" class="text-xl font-bold text-amber-400">0</span>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-xs text-slate-500 block" data-i18n="config_stat_vpn">Requires VPN</span>
+          <span id="config-stat-vpn" class="text-xl font-bold text-sky-400">0</span>
+        </div>
+      </div>
+
+      <!-- Sources List Cards -->
+      <div id="sources-config-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: Job Detail -->
+  <div id="job-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-start justify-between">
+        <div>
+          <span id="modal-source-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"></span>
+          <h3 id="modal-job-title" class="text-lg font-bold text-slate-100 mt-1"></h3>
+          <p id="modal-company-name" class="text-sm text-emerald-400 font-medium"></p>
+        </div>
+        <button onclick="closeJobModal()" class="text-slate-400 hover:text-slate-200 text-lg p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-4 text-sm text-slate-300">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-semibold" data-i18n="modal_salary">Salary</span>
+            <span id="modal-salary" class="font-bold text-emerald-400"></span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-semibold" data-i18n="modal_job_type">Job Type</span>
+            <span id="modal-job-type" class="font-medium text-amber-300"></span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-semibold" data-i18n="modal_work_mode">Work Mode</span>
+            <span id="modal-workplace-mode" class="font-medium text-cyan-300"></span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 block uppercase font-semibold" data-i18n="modal_location">Location</span>
+            <span id="modal-location" class="font-medium text-slate-200"></span>
+          </div>
+        </div>
+
+        <div id="modal-skills-box" class="space-y-1">
+          <span class="text-xs text-slate-500 block" data-i18n="modal_skills">Skills / Tech stack:</span>
+          <div id="modal-skills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-xs text-slate-500 block" data-i18n="modal_desc">Job Description:</span>
+          <div id="modal-description" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-300 whitespace-pre-line leading-relaxed max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+      <div class="px-6 py-3.5 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between">
+        <span id="modal-crawled-at" class="text-xs text-slate-500"></span>
+        <div class="flex space-x-2">
+          <a id="modal-job-url" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center space-x-1.5 transition">
+            <span data-i18n="modal_open_origin">Open Original Posting</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: View Full Report -->
+  <div id="report-view-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i>
+          <h3 id="report-modal-title" class="text-base font-bold text-slate-100">Market Report</h3>
+        </div>
+        <button onclick="closeReportViewModal()" class="text-slate-400 hover:text-slate-200 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-8 overflow-y-auto flex-1 prose text-slate-300" id="report-modal-content">
+        <!-- Rendered markdown goes here -->
+      </div>
+      <div class="px-6 py-3 border-t border-slate-800 bg-slate-900 flex items-center justify-between text-xs text-slate-400">
+        <span id="report-modal-meta"></span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center space-x-1">
+          <i class="fa-solid fa-print"></i>
+          <span data-i18n="btn_print_pdf">Print / Export PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Trigger Crawl (DROPDOWN-BASED) -->
+  <div id="crawl-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+          <i class="fa-solid fa-radar text-emerald-400"></i>
+          <span data-i18n="modal_crawl_title">Crawl New Job Postings</span>
+        </h3>
+        <button onclick="closeCrawlModal()" class="text-slate-400 hover:text-slate-200 p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <!-- Job Title Dropdown -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5" data-i18n="crawl_step1_label">
+            1. Target Position / Keyword (*)
+          </label>
+          <select id="crawl-select-keyword" onchange="handleCrawlKeywordChange(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-emerald-500 text-sm">
+            <option value="AI Engineer" selected>🤖 AI Engineer</option>
+            <option value="Data Engineer">💾 Data Engineer</option>
+            <option value="Python Developer">🐍 Python Developer</option>
+            <option value="Backend Developer">⚙️ Backend Developer</option>
+            <option value="Frontend Developer">🎨 Frontend Developer</option>
+            <option value="Fullstack Developer">💻 Fullstack Developer</option>
+            <option value="DevOps Engineer">☁️ DevOps / Cloud Engineer</option>
+            <option value="Data Scientist">📊 Data Scientist</option>
+            <option value="Machine Learning">🧠 Machine Learning Engineer</option>
+            <option value="Mobile Developer">📱 Mobile Developer (Flutter, React Native, iOS, Android)</option>
+            <option value="Golang Developer">🚀 Golang Developer</option>
+            <option value="Java Developer">☕ Java Developer</option>
+            <option value="Embedded Engineer">🔌 Embedded / Firmware Engineer</option>
+            <option value="QA QC Tester">🔍 QA / QC / Automation Tester</option>
+            <option value="__custom__">✍️ [Custom...] Enter position name</option>
+          </select>
+
+          <!-- Custom keyword input (revealed when __custom__ is selected) -->
+          <div id="crawl-custom-keyword-box" class="mt-2 hidden">
+            <input type="text" id="crawl-custom-keyword" placeholder="Enter position name (e.g. Rust Developer, Solution Architect...)" data-i18n-placeholder="crawl_kw_custom_ph"
+              class="w-full bg-slate-950 border border-emerald-500/60 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-400">
+          </div>
+        </div>
+
+        <!-- Location Dropdown -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5" data-i18n="crawl_step2_label">
+            2. Target Location / Region
+          </label>
+          <select id="crawl-select-location" onchange="handleCrawlLocationChange(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-emerald-500 text-sm">
+            <option value="" selected>📍 All Locations (No location filter)</option>
+            <option value="Remote">🌐 Remote / Online</option>
+            <option value="Remote Worldwide">🌐 Remote Worldwide (Global & US)</option>
+            <option value="Remote Vietnam">🌐 Remote in Vietnam</option>
+            <option value="Ha Noi">Hanoi</option>
+            <option value="Da Nang">Da Nang</option>
+            <option value="Ho Chi Minh">Ho Chi Minh City</option>
+            <option value="Ha Noi, Da Nang">Hanoi & Da Nang</option>
+            <option value="__custom__">✍️ [Custom...] Enter location</option>
+          </select>
+
+          <!-- Custom location input -->
+          <div id="crawl-custom-location-box" class="mt-2 hidden">
+            <input type="text" id="crawl-custom-location" placeholder="Enter location (e.g. Singapore, Berlin, Tokyo...)" data-i18n-placeholder="crawl_loc_custom_ph"
+              class="w-full bg-slate-950 border border-emerald-500/60 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-400">
+          </div>
+        </div>
+
+        <!-- Remote & Online Dedicated Mode Toggle -->
+        <div class="bg-cyan-950/30 border border-cyan-800/60 rounded-xl p-3 flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm shadow-sm">
+              <i class="fa-solid fa-house-laptop"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-cyan-200 flex items-center space-x-1.5">
+                <span data-i18n="crawl_remote_card_title">Dedicated Remote & Online Mode</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] bg-cyan-900 text-cyan-300 font-normal" data-i18n="crawl_remote_badge">New</span>
+              </div>
+              <p class="text-[11px] text-slate-400" data-i18n="crawl_remote_card_sub">Auto-prioritizes 100% Remotive, ITviec Remote, LinkedIn Remote</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="crawl-toggle-remote" onchange="handleCrawlRemoteToggle(this.checked)" class="sr-only peer">
+            <div class="w-10 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+          </label>
+        </div>
+
+        <!-- Source Selection Checklist (Dynamic) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-semibold text-slate-300" data-i18n="crawl_step3_label">
+              3. Select Job Sources
+            </label>
+            <div class="flex items-center space-x-2 text-[11px]">
+              <button type="button" onclick="setCrawlSourcesMode('recommended')" class="text-emerald-400 hover:underline" data-i18n="crawl_src_rec_only">Recommended only</button>
+              <span class="text-slate-600">•</span>
+              <button type="button" onclick="setCrawlSourcesMode('all')" class="text-slate-400 hover:text-slate-200" data-i18n="crawl_src_all">Select all</button>
+              <span class="text-slate-600">•</span>
+              <button type="button" onclick="setCrawlSourcesMode('none')" class="text-slate-500 hover:text-slate-300" data-i18n="crawl_src_none">Clear all</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Sources Container -->
+          <div id="crawl-sources-checkboxes" class="grid grid-cols-2 gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800 max-h-48 overflow-y-auto">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="flex items-center justify-between mt-1 text-[11px] text-slate-500">
+            <span data-i18n="crawl_vpn_tip">Tip: Connect to VPN before crawling VPN-badged sources</span>
+            <button type="button" onclick="closeCrawlModal(); switchTab('config');" class="text-amber-400 hover:underline" data-i18n="crawl_manage_src_link">⚙️ Manage sources...</button>
+          </div>
+        </div>
+
+        <!-- Limit Dropdown -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5" data-i18n="crawl_step4_label">
+            4. Max jobs per source
+          </label>
+          <select id="crawl-input-limit" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 text-sm">
+            <option value="10">10 jobs / source (Fast crawl)</option>
+            <option value="20" selected>20 jobs / source (Standard recommended)</option>
+            <option value="30">30 jobs / source (Expanded)</option>
+            <option value="50">50 jobs / source (Deep crawl)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800/80 flex space-x-2">
+        <button onclick="closeCrawlModal()" class="w-1/3 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700 transition" data-i18n="btn_cancel">Cancel</button>
+        <button onclick="submitCrawl()" class="w-2/3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-1.5 transition">
+          <i class="fa-solid fa-play"></i>
+          <span data-i18n="btn_start_crawl">Start Crawling Now</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add New Source -->
+  <div id="add-source-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+          <i class="fa-solid fa-plus-circle text-emerald-400"></i>
+          <span data-i18n="modal_add_source_title">Add New Job Source</span>
+        </h3>
+        <button onclick="closeAddSourceModal()" class="text-slate-400 hover:text-slate-200 p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_id_label">Identifier Code (ID) (*)</label>
+          <input type="text" id="new-source-id" placeholder="e.g. vietnamworks, vieclam24h, custom_site..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+          <p class="text-[10px] text-slate-500 mt-0.5" data-i18n="add_src_id_tip">Lowercase, letters and numbers, no spaces.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_name_label">Display Name (*)</label>
+          <input type="text" id="new-source-name" placeholder="e.g. VietnamWorks, JobStreet..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_category_label">Category</label>
+            <select id="new-source-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+              <option value="Tech VN">Tech VN</option>
+              <option value="General VN">General VN</option>
+              <option value="Startup & Culture">Startup & Culture</option>
+              <option value="Global & Remote">Global & Remote</option>
+              <option value="Social Media">Social Media</option>
+              <option value="Other">Other / Custom</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_color_label">Badge Color</label>
+            <select id="new-source-color" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+              <option value="teal">Teal</option>
+              <option value="blue">Blue</option>
+              <option value="emerald">Emerald</option>
+              <option value="purple">Purple</option>
+              <option value="amber">Amber</option>
+              <option value="red">Red</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_url_label">Sample Search URL or Homepage</label>
+          <input type="text" id="new-source-url" placeholder="https://..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="add_src_desc_label">Short Description</label>
+          <textarea id="new-source-desc" rows="2" placeholder="Notes about this recruitment source..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <div class="flex items-center space-x-4 pt-1">
+          <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" id="new-source-enabled" checked class="rounded bg-slate-950 border-slate-700 text-emerald-500">
+            <span data-i18n="add_src_enable_now">Enable now</span>
+          </label>
+          <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" id="new-source-vpn" class="rounded bg-slate-950 border-slate-700 text-emerald-500">
+            <span data-i18n="add_src_needs_vpn">Needs VPN</span>
+          </label>
+          <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" id="new-source-rec" class="rounded bg-slate-950 border-slate-700 text-emerald-500">
+            <span data-i18n="add_src_recommended">Recommended</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex space-x-2">
+        <button onclick="closeAddSourceModal()" class="w-1/2 py-2 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700" data-i18n="btn_cancel">Cancel</button>
+        <button onclick="submitAddSource()" class="w-1/2 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs" data-i18n="btn_save_source">Save Source</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Trigger Report -->
+  <div id="report-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+          <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i>
+          <span data-i18n="modal_report_title">Generate Market Report with AI</span>
+        </h3>
+        <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-200 p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-xs text-slate-400" data-i18n="report_modal_desc">
+        Google Gemini AI analyzes all stored job postings in SQLite to synthesize salary distributions, required tech stacks, hiring companies, and market trends.
+      </p>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5" data-i18n="report_select_kw_label">Select Position to Analyze (*)</label>
+          <select id="report-select-keyword" onchange="handleReportKeywordChange(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 text-sm">
+            <option value="AI Engineer" selected>🤖 AI Engineer</option>
+            <option value="Data Engineer">💾 Data Engineer</option>
+            <option value="Python Developer">🐍 Python Developer</option>
+            <option value="Backend Developer">⚙️ Backend Developer</option>
+            <option value="Frontend Developer">🎨 Frontend Developer</option>
+            <option value="Fullstack Developer">💻 Fullstack Developer</option>
+            <option value="DevOps Engineer">☁️ DevOps / Cloud Engineer</option>
+            <option value="Data Scientist">📊 Data Scientist</option>
+            <option value="Mobile Developer">📱 Mobile Developer</option>
+            <option value="__custom__">✍️ [Custom...] Enter position</option>
+          </select>
+          <div id="report-custom-keyword-box" class="mt-2 hidden">
+            <input type="text" id="report-custom-keyword" placeholder="Enter target position..." data-i18n-placeholder="report_kw_custom_ph"
+              class="w-full bg-slate-950 border border-indigo-500/60 rounded-xl px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-indigo-400">
+          </div>
+        </div>
+      </div>
+      <div class="pt-3 border-t border-slate-800 flex space-x-2">
+        <button onclick="closeReportModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700" data-i18n="btn_cancel">Cancel</button>
+        <button onclick="submitReport()" class="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-600/20 flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-sparkles"></i>
+          <span data-i18n="btn_submit_report">Generate Report</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Script with i18n Dictionary -->
+  <script>
+    const TRANSLATIONS = {
+      en: {
+        app_title: "Job Market Radar & AI Synthesizer",
+        app_subtitle: "ITviec • CareerViet • Remotive (100% Remote) • TopCV • JoyWork • LinkedIn • FlexJobs • Glassdoor • Gemini AI",
+        btn_config_sources: "Configure Sources",
+        btn_crawl_new: "Crawl New Jobs",
+        btn_ai_report: "AI Market Report",
+        tab_jobs: "Job Explorer",
+        tab_reports: "AI Reports",
+        tab_config: "Sources Config",
+        stat_total: "Total",
+        task_processing: "Processing background task...",
+        task_auto_update: "Auto-refreshes in a few seconds",
+        search_placeholder: "Search by title, company, skills...",
+        filter_job_type_all: "💼 All Job Types",
+        filter_job_type_fulltime: "💼 Full-time",
+        filter_job_type_intern: "🎓 Intern / Fresher",
+        filter_job_type_contract: "📝 Contract / Freelance",
+        filter_job_type_parttime: "⏱️ Part-time",
+        filter_region_all: "📍 All Locations",
+        filter_region_hanoi: "🏛️ Hanoi & North",
+        filter_region_hcm: "🏙️ HCMC & South",
+        filter_region_danang: "🏖️ Da Nang & Central",
+        filter_region_global: "🌍 Global / Worldwide",
+        filter_mode_all: "🏢 All Work Modes",
+        filter_mode_onsite: "🏢 On-site (Office)",
+        filter_mode_hybrid: "🔄 Hybrid",
+        filter_mode_remote: "🌐 Remote / Online",
+        filter_source_all: "🌐 All Sources",
+        filter_reset_tooltip: "Reset filters",
+        filter_has_salary: "Public salary only",
+        filter_is_remote: "Remote / Online only",
+        filter_found: "Found:",
+        filter_jobs_count: "job postings",
+        loading_jobs: "Loading job listings...",
+        empty_jobs_title: "No job postings matched your current filters",
+        empty_jobs_sub: "Try changing job type, location or click 'Reset filters'!",
+        card_view_detail: "View details",
+        card_open_origin: "Open original posting",
+        card_recent: "Recent",
+        salary_negotiable: "Negotiable",
+        mode_onsite: "On-site",
+        mode_hybrid: "Hybrid",
+        mode_remote: "Remote",
+        type_fulltime: "Full-time",
+        type_intern: "Intern / Fresher",
+        type_contract: "Contract",
+        type_parttime: "Part-time",
+        page_info: "Page <b>{page}</b> / <b>{total_pages}</b> (Total {total} jobs)",
+        page_prev: "Previous",
+        page_next: "Next",
+        modal_salary: "Salary",
+        modal_job_type: "Job Type",
+        modal_work_mode: "Work Mode",
+        modal_location: "Location",
+        modal_skills: "Skills / Tech Stack:",
+        modal_desc: "Job Description:",
+        modal_crawled_at: "Crawled at:",
+        modal_open_origin: "Open Original Posting",
+        reports_title: "AI Market Intelligence Reports",
+        reports_subtitle: "Synthesized and analyzed by Google Gemini AI",
+        btn_generate_report: "Generate New Report",
+        empty_reports_title: "No market reports generated yet",
+        empty_reports_sub: "Click 'AI Market Report' to have Gemini analyze crawled job data!",
+        report_card_based_on: "Based on analysis of <b>{count}</b> real job postings",
+        btn_read_report: "Read Report",
+        report_modal_title_prefix: "Market Report:",
+        report_meta_info: "Model: {model} | Analyzed {count} jobs | Created: {date}",
+        btn_print_pdf: "Print / Export PDF",
+        config_title: "Job Sources Configuration",
+        config_subtitle: "Enable or disable sources flexibly. Add custom job sources and configure endpoints according to your needs.",
+        btn_add_source: "Add New Source",
+        config_stat_total: "Total Sources",
+        config_stat_active: "Active",
+        config_stat_rec: "Recommended",
+        config_stat_vpn: "Requires VPN",
+        badge_recommended: "Recommended",
+        badge_needs_vpn: "Needs VPN",
+        badge_no_vpn: "No VPN",
+        badge_needs_login: "Login Required",
+        badge_guest: "Public Guest",
+        badge_custom_url: "Custom URL",
+        btn_delete_source: "Delete this source",
+        modal_crawl_title: "Crawl New Job Postings",
+        crawl_step1_label: "1. Target Position / Keyword (*)",
+        crawl_step2_label: "2. Target Location / Region",
+        crawl_step3_label: "3. Select Job Sources",
+        crawl_step4_label: "4. Max jobs per source",
+        crawl_kw_custom: "✍️ [Custom...] Enter position name",
+        crawl_kw_custom_ph: "Enter position name (e.g. Rust Developer, Solution Architect...)",
+        crawl_loc_all: "📍 All Locations (No location filter)",
+        crawl_loc_remote: "🌐 Remote / Online",
+        crawl_loc_remote_global: "🌐 Remote Worldwide (Global & US)",
+        crawl_loc_remote_vn: "🌐 Remote in Vietnam",
+        crawl_loc_hanoi: "Hanoi",
+        crawl_loc_danang: "Da Nang",
+        crawl_loc_hcm: "Ho Chi Minh City",
+        crawl_loc_custom: "✍️ [Custom...] Enter location",
+        crawl_loc_custom_ph: "Enter location (e.g. Singapore, Berlin, Tokyo...)",
+        crawl_remote_card_title: "Dedicated Remote & Online Mode",
+        crawl_remote_card_sub: "Auto-prioritizes 100% Remotive, ITviec Remote, LinkedIn Remote",
+        crawl_remote_badge: "New",
+        crawl_src_rec_only: "Recommended only",
+        crawl_src_all: "Select all",
+        crawl_src_none: "Clear all",
+        crawl_vpn_tip: "Tip: Connect to VPN before crawling VPN-badged sources",
+        crawl_manage_src_link: "⚙️ Manage sources...",
+        crawl_limit_10: "10 jobs / source (Fast crawl)",
+        crawl_limit_20: "20 jobs / source (Standard recommended)",
+        crawl_limit_30: "30 jobs / source (Expanded)",
+        crawl_limit_50: "50 jobs / source (Deep crawl)",
+        btn_cancel: "Cancel",
+        btn_start_crawl: "Start Crawling Now",
+        modal_add_source_title: "Add New Job Source",
+        add_src_id_label: "Identifier Code (ID) (*)",
+        add_src_id_tip: "Lowercase, letters and numbers, no spaces.",
+        add_src_name_label: "Display Name (*)",
+        add_src_category_label: "Category",
+        add_src_color_label: "Badge Color",
+        add_src_url_label: "Sample Search URL or Homepage",
+        add_src_desc_label: "Short Description",
+        add_src_enable_now: "Enable now",
+        add_src_needs_vpn: "Needs VPN",
+        add_src_recommended: "Recommended",
+        btn_save_source: "Save Source",
+        modal_report_title: "Generate Market Report with AI",
+        report_modal_desc: "Google Gemini AI analyzes all stored job postings in SQLite to synthesize salary distributions, required tech stacks, hiring companies, and market trends.",
+        report_select_kw_label: "Select Position to Analyze (*)",
+        report_kw_custom_ph: "Enter target position...",
+        btn_submit_report: "Generate Report",
+        alert_enter_kw: "Please select or enter a target position keyword!",
+        alert_select_one_src: "Please select at least one job source!",
+        alert_enter_id_name: "Please enter both Source ID and Display Name!",
+        alert_confirm_del_src: "Are you sure you want to delete source '{id}'?",
+        task_crawl_banner: "Crawling '{kw}' ({loc}) from {src}...",
+        task_report_banner: "Sending '{kw}' job data to Gemini AI for market synthesis...",
+      },
+      vi: {
+        app_title: "VN Job Scanner & AI Synthesizer",
+        app_subtitle: "ITviec • CareerViet • Remotive (100% Remote) • TopCV • JoyWork • LinkedIn • FlexJobs • Glassdoor • Gemini AI",
+        btn_config_sources: "Cấu hình Nguồn",
+        btn_crawl_new: "Cào tin mới",
+        btn_ai_report: "Tạo Báo cáo AI",
+        tab_jobs: "Kho việc làm",
+        tab_reports: "Báo cáo AI",
+        tab_config: "Cấu hình Nguồn",
+        stat_total: "Tổng",
+        task_processing: "Đang xử lý tác vụ ngầm...",
+        task_auto_update: "Tự động cập nhật sau vài giây",
+        search_placeholder: "Tìm kiếm theo vị trí, công ty, kỹ năng...",
+        filter_job_type_all: "💼 Tất cả loại CV",
+        filter_job_type_fulltime: "💼 Toàn thời gian (Full-time)",
+        filter_job_type_intern: "🎓 Thực tập / Fresher",
+        filter_job_type_contract: "📝 Hợp đồng / Freelance",
+        filter_job_type_parttime: "⏱️ Bán thời gian (Part-time)",
+        filter_region_all: "📍 Tất cả nơi triển khai",
+        filter_region_hanoi: "🏛️ Hà Nội & Miền Bắc",
+        filter_region_hcm: "🏙️ TP. HCM & Miền Nam",
+        filter_region_danang: "🏖️ Đà Nẵng & Miền Trung",
+        filter_region_global: "🌍 Toàn cầu / Quốc tế",
+        filter_mode_all: "🏢 Tất cả mô hình",
+        filter_mode_onsite: "🏢 Tại văn phòng (On-site)",
+        filter_mode_hybrid: "🔄 Kết hợp (Hybrid)",
+        filter_mode_remote: "🌐 Từ xa (Remote / Online)",
+        filter_source_all: "🌐 Tất cả nguồn",
+        filter_reset_tooltip: "Đặt lại bộ lọc",
+        filter_has_salary: "Chỉ bài có công khai mức lương",
+        filter_is_remote: "Chỉ việc làm Remote / Online",
+        filter_found: "Tìm thấy:",
+        filter_jobs_count: "tin tuyển dụng",
+        loading_jobs: "Đang tải danh sách việc làm...",
+        empty_jobs_title: "Không tìm thấy tin tuyển dụng nào phù hợp với bộ lọc",
+        empty_jobs_sub: "Hãy thử đổi loại công việc, nơi triển khai hoặc bấm 'Đặt lại bộ lọc'!",
+        card_view_detail: "Xem chi tiết",
+        card_open_origin: "Mở tin gốc",
+        card_recent: "Gần đây",
+        salary_negotiable: "Thỏa thuận",
+        mode_onsite: "On-site",
+        mode_hybrid: "Hybrid",
+        mode_remote: "Remote",
+        type_fulltime: "Full-time",
+        type_intern: "Thực tập / Fresher",
+        type_contract: "Hợp đồng",
+        type_parttime: "Bán thời gian",
+        page_info: "Trang <b>{page}</b> / <b>{total_pages}</b> (Tổng {total} tin)",
+        page_prev: "Trước",
+        page_next: "Sau",
+        modal_salary: "Mức lương",
+        modal_job_type: "Loại CV",
+        modal_work_mode: "Mô hình",
+        modal_location: "Nơi triển khai",
+        modal_skills: "Kỹ năng / Tech stack:",
+        modal_desc: "Chi tiết mô tả công việc:",
+        modal_crawled_at: "Thu thập lúc:",
+        modal_open_origin: "Mở trang tuyển dụng gốc",
+        reports_title: "Báo cáo Phân tích Thị trường AI",
+        reports_subtitle: "Tổng hợp và đánh giá chuyên sâu bởi mô hình Google Gemini",
+        btn_generate_report: "Tổng hợp báo cáo mới",
+        empty_reports_title: "Chưa có báo cáo thị trường nào",
+        empty_reports_sub: "Bấm nút 'Tạo Báo cáo AI' để Gemini phân tích dữ liệu tuyển dụng đã cào!",
+        report_card_based_on: "Dựa trên phân tích <b>{count}</b> tin tuyển dụng thực tế",
+        btn_read_report: "Đọc báo cáo",
+        report_modal_title_prefix: "Báo Cáo Tuyển Dụng:",
+        report_meta_info: "Mô hình: {model} | Phân tích {count} tin | Ngày tạo: {date}",
+        btn_print_pdf: "In / Xuất PDF",
+        config_title: "Cấu hình Nguồn Tuyển dụng (Sources Config)",
+        config_subtitle: "Bật/tắt nguồn linh hoạt để tránh cào sai danh mục. Thêm các nguồn tuyển dụng tùy biến hoặc cấu hình URL tìm kiếm theo mong muốn của bạn.",
+        btn_add_source: "Thêm nguồn mới",
+        config_stat_total: "Tổng số nguồn",
+        config_stat_active: "Đang kích hoạt",
+        config_stat_rec: "Nguồn đề xuất",
+        config_stat_vpn: "Yêu cầu VPN",
+        badge_recommended: "Đề xuất",
+        badge_needs_vpn: "Cần VPN",
+        badge_no_vpn: "Không cần VPN",
+        badge_needs_login: "Cần Login FB",
+        badge_guest: "Khách vãng lai",
+        badge_custom_url: "URL tùy chỉnh",
+        btn_delete_source: "Xóa nguồn này",
+        modal_crawl_title: "Cào tin tuyển dụng mới",
+        crawl_step1_label: "1. Vị trí / Từ khóa tuyển dụng (*)",
+        crawl_step2_label: "2. Khu vực cần lọc",
+        crawl_step3_label: "3. Chọn nguồn tuyển dụng",
+        crawl_step4_label: "4. Số tin tối đa mỗi nguồn",
+        crawl_kw_custom: "✍️ [Khác...] Tự nhập từ khóa tùy ý",
+        crawl_kw_custom_ph: "Nhập tên vị trí mong muốn (VD: Rust Developer, Solution Architect...)",
+        crawl_loc_all: "📍 Toàn quốc (Không lọc khu vực)",
+        crawl_loc_remote: "🌐 Remote / Online (Làm việc từ xa)",
+        crawl_loc_remote_global: "🌐 Remote Toàn cầu (Global & US)",
+        crawl_loc_remote_vn: "🌐 Remote tại Việt Nam",
+        crawl_loc_hanoi: "Hà Nội",
+        crawl_loc_danang: "Đà Nẵng",
+        crawl_loc_hcm: "TP. Hồ Chí Minh",
+        crawl_loc_custom: "✍️ [Khác...] Tự nhập địa điểm",
+        crawl_loc_custom_ph: "Nhập địa điểm (VD: Binh Duong, Can Tho...)",
+        crawl_remote_card_title: "Cơ chế Tìm việc Remote & Online",
+        crawl_remote_card_sub: "Tự động ưu tiên Remotive 100%, ITviec Remote, LinkedIn Remote",
+        crawl_remote_badge: "Mới",
+        crawl_src_rec_only: "Chỉ Đề xuất",
+        crawl_src_all: "Chọn hết",
+        crawl_src_none: "Bỏ hết",
+        crawl_vpn_tip: "Tip: Bật VPN trước khi cào các nguồn có gắn thẻ VPN",
+        crawl_manage_src_link: "⚙️ Quản lý nguồn...",
+        crawl_limit_10: "10 tin / nguồn (Chạy nhanh)",
+        crawl_limit_20: "20 tin / nguồn (Khuyến nghị chuẩn)",
+        crawl_limit_30: "30 tin / nguồn (Mở rộng)",
+        crawl_limit_50: "50 tin / nguồn (Quét sâu)",
+        btn_cancel: "Hủy",
+        btn_start_crawl: "Bắt đầu cào ngay",
+        modal_add_source_title: "Thêm Nguồn Tuyển Dụng Mới",
+        add_src_id_label: "Mã định danh (ID) (*)",
+        add_src_id_tip: "Viết liền, không dấu, chữ thường.",
+        add_src_name_label: "Tên hiển thị (*)",
+        add_src_category_label: "Phân loại",
+        add_src_color_label: "Màu nhãn",
+        add_src_url_label: "URL tìm kiếm mẫu hoặc Trang chủ",
+        add_src_desc_label: "Mô tả ngắn",
+        add_src_enable_now: "Bật ngay",
+        add_src_needs_vpn: "Cần VPN",
+        add_src_recommended: "Khuyến nghị",
+        btn_save_source: "Lưu nguồn",
+        modal_report_title: "Tạo Báo Cáo Thị Trường Với AI",
+        report_modal_desc: "Google Gemini 3.8 Flash sẽ đọc toàn bộ dữ liệu tin tuyển dụng đã cào trong SQLite để tổng hợp phân tích phổ lương, tech stack, công ty đang tuyển và xu hướng thị trường.",
+        report_select_kw_label: "Chọn vị trí cần phân tích (*)",
+        report_kw_custom_ph: "Nhập tên vị trí mong muốn...",
+        btn_submit_report: "Tạo báo cáo",
+        alert_enter_kw: "Vui lòng chọn hoặc nhập từ khóa tuyển dụng!",
+        alert_select_one_src: "Vui lòng tích chọn ít nhất một nguồn tuyển dụng!",
+        alert_enter_id_name: "Vui lòng nhập Mã định danh và Tên hiển thị của nguồn!",
+        alert_confirm_del_src: "Bạn có chắc muốn xóa nguồn '{id}' khỏi danh sách?",
+        task_crawl_banner: "Đang quét vị trí '{kw}' ({loc}) từ {src}...",
+        task_report_banner: "Đang gửi dữ liệu vị trí '{kw}' tới Gemini AI để tổng hợp báo cáo...",
+      },
+      ru: {
+        app_title: "Радар рынка вакансий и AI-анализ",
+        app_subtitle: "ITviec • CareerViet • Remotive (100% Remote) • TopCV • JoyWork • LinkedIn • FlexJobs • Glassdoor • Gemini AI",
+        btn_config_sources: "Источники",
+        btn_crawl_new: "Собрать вакансии",
+        btn_ai_report: "AI-отчет",
+        tab_jobs: "Поиск вакансий",
+        tab_reports: "AI-отчеты",
+        tab_config: "Источники",
+        stat_total: "Всего",
+        task_processing: "Выполняется фоновая задача...",
+        task_auto_update: "Автообновление через несколько секунд",
+        search_placeholder: "Поиск по должности, компании, навыкам...",
+        filter_job_type_all: "💼 Все типы занятости",
+        filter_job_type_fulltime: "💼 Полная занятость",
+        filter_job_type_intern: "🎓 Стажер / Начальный уровень",
+        filter_job_type_contract: "📝 Контракт / Фриланс",
+        filter_job_type_parttime: "⏱️ Частичная занятость",
+        filter_region_all: "📍 Все локации",
+        filter_region_hanoi: "🏛️ Ханой и Север",
+        filter_region_hcm: "🏙️ Хошимин и Юг",
+        filter_region_danang: "🏖️ Дананг и Центр",
+        filter_region_global: "🌍 По всему миру",
+        filter_mode_all: "🏢 Все форматы работы",
+        filter_mode_onsite: "🏢 В офисе (On-site)",
+        filter_mode_hybrid: "🔄 Гибридный формат",
+        filter_mode_remote: "🌐 Удаленно (Remote)",
+        filter_source_all: "🌐 Все источники",
+        filter_reset_tooltip: "Сбросить фильтры",
+        filter_has_salary: "Только с указанной зарплатой",
+        filter_is_remote: "Только удаленная работа",
+        filter_found: "Найдено:",
+        filter_jobs_count: "вакансий",
+        loading_jobs: "Загрузка списка вакансий...",
+        empty_jobs_title: "По заданным фильтрам вакансий не найдено",
+        empty_jobs_sub: "Попробуйте изменить тип занятости, локацию или сбросить фильтры!",
+        card_view_detail: "Подробнее",
+        card_open_origin: "Открыть оригинал",
+        card_recent: "Недавно",
+        salary_negotiable: "По договоренности",
+        mode_onsite: "В офисе",
+        mode_hybrid: "Гибрид",
+        mode_remote: "Удаленно",
+        type_fulltime: "Полная занятость",
+        type_intern: "Стажер / Fresher",
+        type_contract: "Контракт",
+        type_parttime: "Частичная",
+        page_info: "Страница <b>{page}</b> / <b>{total_pages}</b> (Всего {total} вак.)",
+        page_prev: "Назад",
+        page_next: "Вперед",
+        modal_salary: "Зарплата",
+        modal_job_type: "Занятость",
+        modal_work_mode: "Формат",
+        modal_location: "Локация",
+        modal_skills: "Навыки / Стек технологий:",
+        modal_desc: "Описание вакансии:",
+        modal_crawled_at: "Собрано:",
+        modal_open_origin: "Открыть оригинальную вакансию",
+        reports_title: "AI-отчеты по рынку труда",
+        reports_subtitle: "Глубокий аналитический синтез на базе модели Google Gemini",
+        btn_generate_report: "Создать новый отчет",
+        empty_reports_title: "Пока нет созданных отчетов",
+        empty_reports_sub: "Нажмите 'AI-отчет', чтобы Gemini проанализировал данные рынка вакансий!",
+        report_card_based_on: "На основе анализа <b>{count}</b> реальных вакансий",
+        btn_read_report: "Читать отчет",
+        report_modal_title_prefix: "Отчет по рынку вакансий:",
+        report_meta_info: "Модель: {model} | Вакансий: {count} | Дата: {date}",
+        btn_print_pdf: "Печать / Экспорт в PDF",
+        config_title: "Управление источниками вакансий",
+        config_subtitle: "Гибко включайте и отключайте платформы. Добавляйте новые порталы вакансий и настраивайте поиск под свои задачи.",
+        btn_add_source: "Добавить источник",
+        config_stat_total: "Всего источников",
+        config_stat_active: "Активных",
+        config_stat_rec: "Рекомендуемых",
+        config_stat_vpn: "Требует VPN",
+        badge_recommended: "Рекомендуется",
+        badge_needs_vpn: "Нужен VPN",
+        badge_no_vpn: "Без VPN",
+        badge_needs_login: "Нужен логин FB",
+        badge_guest: "Гостевой доступ",
+        badge_custom_url: "Свой URL",
+        btn_delete_source: "Удалить этот источник",
+        modal_crawl_title: "Сбор новых вакансий",
+        crawl_step1_label: "1. Должность / Ключевое слово (*)",
+        crawl_step2_label: "2. Локация для поиска",
+        crawl_step3_label: "3. Выберите источники вакансий",
+        crawl_step4_label: "4. Макс. вакансий с источника",
+        crawl_kw_custom: "✍️ [Другое...] Ввести ключевое слово",
+        crawl_kw_custom_ph: "Введите должность (напр. Rust Developer, Solution Architect...)",
+        crawl_loc_all: "📍 Все локации (Без фильтра)",
+        crawl_loc_remote: "🌐 Удаленная работа (Remote)",
+        crawl_loc_remote_global: "🌐 Удаленно по всему миру (Global & US)",
+        crawl_loc_remote_vn: "🌐 Удаленно во Вьетнаме",
+        crawl_loc_hanoi: "Ханой",
+        crawl_loc_danang: "Дананг",
+        crawl_loc_hcm: "Хошимин",
+        crawl_loc_custom: "✍️ [Другое...] Ввести локацию",
+        crawl_loc_custom_ph: "Введите локацию (напр. Singapore, Berlin, Tokyo...)",
+        crawl_remote_card_title: "Специальный режим Remote & Online",
+        crawl_remote_card_sub: "Автоматический приоритет: Remotive 100%, ITviec Remote, LinkedIn Remote",
+        crawl_remote_badge: "Новое",
+        crawl_src_rec_only: "Только реком.",
+        crawl_src_all: "Выбрать все",
+        crawl_src_none: "Снять все",
+        crawl_vpn_tip: "Совет: Включите VPN перед сбором данных с платформ, требующих VPN",
+        crawl_manage_src_link: "⚙️ Управление источниками...",
+        crawl_limit_10: "10 вакансий / источник (Быстро)",
+        crawl_limit_20: "20 вакансий / источник (Стандарт)",
+        crawl_limit_30: "30 вакансий / источник (Расширенный)",
+        crawl_limit_50: "50 вакансий / источник (Глубокий сбор)",
+        btn_cancel: "Отмена",
+        btn_start_crawl: "Начать сбор вакансий",
+        modal_add_source_title: "Добавить новый источник вакансий",
+        add_src_id_label: "Идентификатор (ID) (*)",
+        add_src_id_tip: "Строчные латинские буквы и цифры без пробелов.",
+        add_src_name_label: "Отображаемое имя (*)",
+        add_src_category_label: "Категория",
+        add_src_color_label: "Цвет метки",
+        add_src_url_label: "URL поиска или главная страница",
+        add_src_desc_label: "Краткое описание",
+        add_src_enable_now: "Включить сразу",
+        add_src_needs_vpn: "Нужен VPN",
+        add_src_recommended: "Рекомендуется",
+        btn_save_source: "Сохранить источник",
+        modal_report_title: "Создать отчет по рынку с AI",
+        report_modal_desc: "Google Gemini проанализирует базу вакансий в SQLite: вилки зарплат, ключевой стек технологий, топ компаний и рыночные тренды.",
+        report_select_kw_label: "Выберите должность для анализа (*)",
+        report_kw_custom_ph: "Введите название должности...",
+        btn_submit_report: "Сгенерировать отчет",
+        alert_enter_kw: "Пожалуйста, выберите или введите ключевое слово должности!",
+        alert_select_one_src: "Пожалуйста, выберите хотя бы один источник вакансий!",
+        alert_enter_id_name: "Пожалуйста, введите идентификатор ID и имя источника!",
+        alert_confirm_del_src: "Вы уверены, что хотите удалить источник '{id}'?",
+        task_crawl_banner: "Сбор вакансий '{kw}' ({loc}) из {src}...",
+        task_report_banner: "Отправка данных '{kw}' в Gemini AI для генерации отчета...",
+      }
+    };
+
+    let currentLang = localStorage.getItem("app_lang") || "en";
+    let currentPage = 1;
+    let globalSources = [];
+    let searchDebounceTimer = null;
+    let lastHandledTaskId = null;
+    let lastHandledTaskStatus = null;
+    let isInitialTaskCheck = true;
+
+    function t(key, params = {}) {
+      const dict = TRANSLATIONS[currentLang] || TRANSLATIONS["en"];
+      let text = dict[key] || (TRANSLATIONS["en"] ? TRANSLATIONS["en"][key] : "") || key;
+      for (const [k, v] of Object.entries(params)) {
+        text = text.replace(new RegExp(`\\{${k}\\}`, "g"), v);
+      }
+      return text;
+    }
+
+    function toggleLangMenu() {
+      const menu = document.getElementById("lang-dropdown-menu");
+      if (menu) menu.classList.toggle("hidden");
+    }
+
+    function setLanguage(lang) {
+      if (!TRANSLATIONS[lang]) lang = "en";
+      currentLang = lang;
+      localStorage.setItem("app_lang", lang);
+      document.documentElement.lang = lang;
+
+      // Close menu
+      const menu = document.getElementById("lang-dropdown-menu");
+      if (menu) menu.classList.add("hidden");
+
+      // Update button flag & label
+      const flags = { en: "🇬🇧", vi: "🇻🇳", ru: "🇷🇺" };
+      const codes = { en: "EN", vi: "VI", ru: "RU" };
+      const flagEl = document.getElementById("current-lang-flag");
+      const codeEl = document.getElementById("current-lang-code");
+      if (flagEl) flagEl.innerText = flags[lang] || "🇬🇧";
+      if (codeEl) codeEl.innerText = codes[lang] || "EN";
+
+      // Update checkmarks in dropdown
+      ["en", "vi", "ru"].forEach(l => {
+        const checkEl = document.getElementById(`check-lang-${l}`);
+        if (checkEl) {
+          if (l === lang) checkEl.classList.remove("hidden");
+          else checkEl.classList.add("hidden");
+        }
+      });
+
+      // Update static text elements with data-i18n
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (key) el.innerHTML = t(key);
+      });
+
+      // Update inputs with data-i18n-placeholder
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (key) el.placeholder = t(key);
+      });
+
+      // Update elements with data-i18n-title
+      document.querySelectorAll("[data-i18n-title]").forEach(el => {
+        const key = el.getAttribute("data-i18n-title");
+        if (key) el.title = t(key);
+      });
+
+      // Update dropdown option labels
+      updateDropdownOptions();
+
+      // Refresh dynamic content
+      loadStats();
+      loadJobs(currentPage);
+      if (!document.getElementById("view-config").classList.contains("hidden")) {
+        renderSourcesConfig(globalSources);
+      }
+      if (!document.getElementById("view-reports").classList.contains("hidden")) {
+        loadReports();
+      }
+    }
+
+    function updateDropdownOptions() {
+      // 1. Job Type filter dropdown
+      const selJobType = document.getElementById("filter-job-type");
+      if (selJobType) {
+        const cur = selJobType.value;
+        selJobType.options[0].text = t("filter_job_type_all");
+        selJobType.options[1].text = t("filter_job_type_fulltime");
+        selJobType.options[2].text = t("filter_job_type_intern");
+        selJobType.options[3].text = t("filter_job_type_contract");
+        selJobType.options[4].text = t("filter_job_type_parttime");
+        selJobType.value = cur;
+      }
+
+      // 2. Region filter dropdown
+      const selRegion = document.getElementById("filter-region");
+      if (selRegion) {
+        const cur = selRegion.value;
+        selRegion.options[0].text = t("filter_region_all");
+        selRegion.options[1].text = t("filter_region_hanoi");
+        selRegion.options[2].text = t("filter_region_hcm");
+        selRegion.options[3].text = t("filter_region_danang");
+        selRegion.options[4].text = t("filter_region_global");
+        selRegion.value = cur;
+      }
+
+      // 3. Workplace Mode filter dropdown
+      const selMode = document.getElementById("filter-workplace-mode");
+      if (selMode) {
+        const cur = selMode.value;
+        selMode.options[0].text = t("filter_mode_all");
+        selMode.options[1].text = t("filter_mode_onsite");
+        selMode.options[2].text = t("filter_mode_hybrid");
+        selMode.options[3].text = t("filter_mode_remote");
+        selMode.value = cur;
+      }
+
+      // 4. Crawl Limit dropdown
+      const selLimit = document.getElementById("crawl-input-limit");
+      if (selLimit) {
+        const cur = selLimit.value;
+        selLimit.options[0].text = t("crawl_limit_10");
+        selLimit.options[1].text = t("crawl_limit_20");
+        selLimit.options[2].text = t("crawl_limit_30");
+        selLimit.options[3].text = t("crawl_limit_50");
+        selLimit.value = cur;
+      }
+
+      // 5. Crawl Location dropdown
+      const selCrawlLoc = document.getElementById("crawl-select-location");
+      if (selCrawlLoc) {
+        const cur = selCrawlLoc.value;
+        selCrawlLoc.options[0].text = t("crawl_loc_all");
+        selCrawlLoc.options[1].text = t("crawl_loc_remote");
+        selCrawlLoc.options[2].text = t("crawl_loc_remote_global");
+        selCrawlLoc.options[3].text = t("crawl_loc_remote_vn");
+        selCrawlLoc.options[4].text = t("crawl_loc_hanoi");
+        selCrawlLoc.options[5].text = t("crawl_loc_danang");
+        selCrawlLoc.options[6].text = t("crawl_loc_hcm");
+        selCrawlLoc.options[8].text = t("crawl_loc_custom");
+        selCrawlLoc.value = cur;
+      }
+
+      // 6. Crawl Keyword custom option
+      const selCrawlKw = document.getElementById("crawl-select-keyword");
+      if (selCrawlKw) {
+        const lastOpt = selCrawlKw.options[selCrawlKw.options.length - 1];
+        if (lastOpt) lastOpt.text = t("crawl_kw_custom");
+      }
+
+      // 7. Report Keyword custom option
+      const selRepKw = document.getElementById("report-select-keyword");
+      if (selRepKw) {
+        const lastOpt = selRepKw.options[selRepKw.options.length - 1];
+        if (lastOpt) lastOpt.text = t("crawl_kw_custom");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Initialize language
+      setLanguage(currentLang);
+
+      loadStats();
+      loadJobs(1);
+      loadSources();
+      loadReports();
+      startTaskPolling();
+
+      // Close language menu on outside click
+      document.addEventListener("click", (e) => {
+        const container = document.getElementById("lang-switcher-container");
+        if (container && !container.contains(e.target)) {
+          const menu = document.getElementById("lang-dropdown-menu");
+          if (menu) menu.classList.add("hidden");
+        }
+      });
+    });
+
+    function switchTab(tab) {
+      const viewJobs = document.getElementById("view-jobs");
+      const viewReports = document.getElementById("view-reports");
+      const viewConfig = document.getElementById("view-config");
+      const btnJobs = document.getElementById("tab-btn-jobs");
+      const btnReports = document.getElementById("tab-btn-reports");
+      const btnConfig = document.getElementById("tab-btn-config");
+
+      const activeClass = "px-4 py-2 rounded-lg bg-slate-800 font-semibold border flex items-center space-x-2 ";
+      const inactiveClass = "px-4 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center space-x-2 transition";
+
+      // Hide all
+      viewJobs.classList.add('hidden');
+      viewReports.classList.add('hidden');
+      viewConfig.classList.add('hidden');
+      btnJobs.className = inactiveClass;
+      btnReports.className = inactiveClass;
+      btnConfig.className = inactiveClass;
+
+      if (tab === 'jobs') {
+        viewJobs.classList.remove('hidden');
+        btnJobs.className = activeClass + "text-emerald-400 border-emerald-500/30";
+      } else if (tab === 'reports') {
+        viewReports.classList.remove('hidden');
+        btnReports.className = activeClass + "text-indigo-400 border-indigo-500/30";
+        loadReports();
+      } else if (tab === 'config') {
+        viewConfig.classList.remove('hidden');
+        btnConfig.className = activeClass + "text-amber-400 border-amber-500/30";
+        loadSources();
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/stats");
+        const data = await res.json();
+        document.getElementById("stat-total-jobs-badge").innerText = data.total_jobs || 0;
+        document.getElementById("stat-total-reports-badge").innerText = data.total_reports || 0;
+        document.getElementById("stat-total-sources-badge").innerText = data.total_sources || 0;
+
+        const banner = document.getElementById("stats-banner");
+        let html = `
+          <div class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>${t('stat_total')}: <b class="text-slate-200">${data.total_jobs}</b></span></div>
+        `;
+        for (const [src, cnt] of Object.entries(data.by_source || {})) {
+          html += `<div class="flex items-center space-x-1 border-l border-slate-800 pl-3"><span>${src.toUpperCase()}: <b class="text-slate-300">${cnt}</b></span></div>`;
+        }
+        banner.innerHTML = html;
+      } catch (err) {
+        console.error("Error loading stats:", err);
+      }
+    }
+
+    async function loadSources() {
+      try {
+        const res = await fetch("/api/sources");
+        const sources = await res.json();
+        globalSources = sources;
+
+        document.getElementById("stat-total-sources-badge").innerText = sources.length;
+
+        // Render Config Tab
+        renderSourcesConfig(sources);
+
+        // Render dynamic checkboxes in Crawl Modal
+        renderCrawlSourcesCheckboxes(sources);
+
+        // Update Source filter dropdown on Job Explorer
+        updateSourceFilterDropdown(sources);
+      } catch (err) {
+        console.error("Error loading sources:", err);
+      }
+    }
+
+    function renderSourcesConfig(sources) {
+      const container = document.getElementById("sources-config-list");
+      if (!container) return;
+
+      const total = sources.length;
+      const active = sources.filter(s => s.enabled).length;
+      const rec = sources.filter(s => s.recommended).length;
+      const vpn = sources.filter(s => s.requires_vpn).length;
+
+      document.getElementById("config-stat-total").innerText = total;
+      document.getElementById("config-stat-active").innerText = active;
+      document.getElementById("config-stat-rec").innerText = rec;
+      document.getElementById("config-stat-vpn").innerText = vpn;
+
+      const colorMap = {
+        red: "bg-red-950/80 text-red-300 border-red-800/60",
+        blue: "bg-blue-950/80 text-blue-300 border-blue-800/60",
+        teal: "bg-teal-950/80 text-teal-300 border-teal-800/60",
+        sky: "bg-sky-950/80 text-sky-300 border-sky-800/60",
+        emerald: "bg-emerald-950/80 text-emerald-300 border-emerald-800/60",
+        purple: "bg-purple-950/80 text-purple-300 border-purple-800/60",
+        amber: "bg-amber-950/80 text-amber-300 border-amber-800/60",
+        indigo: "bg-indigo-950/80 text-indigo-300 border-indigo-800/60"
+      };
+
+      container.innerHTML = sources.map(s => {
+        const badgeColor = colorMap[s.badge_color] || "bg-slate-800 text-slate-300 border-slate-700";
+        return `
+          <div class="bg-slate-900 border ${s.enabled ? 'border-slate-800 hover:border-slate-700' : 'border-slate-800/50 opacity-70'} rounded-2xl p-5 transition flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${badgeColor}">
+                      ${escapeHtml(s.name)}
+                    </span>
+                    ${s.recommended ? `<span class="text-[10px] bg-amber-950/80 text-amber-300 border border-amber-800 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-star text-[9px] mr-1"></i>${t('badge_recommended')}</span>` : ''}
+                  </div>
+                  <span class="text-xs text-slate-400 mt-1 block">${escapeHtml(s.category || 'Recruitment')}</span>
+                </div>
+                
+                <!-- Toggle switch -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" ${s.enabled ? 'checked' : ''} onchange="toggleSource('${s.id}', this.checked)" class="sr-only peer">
+                  <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              <p class="text-xs text-slate-300 leading-relaxed min-h-[36px]">
+                ${escapeHtml(s.description || 'No description provided.')}
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 text-[10px]">
+                ${s.requires_vpn ? `<span class="px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-800/60"><i class="fa-solid fa-shield mr-1"></i>${t('badge_needs_vpn')}</span>` : `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400">${t('badge_no_vpn')}</span>`}
+                ${s.requires_login ? `<span class="px-2 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-800/60"><i class="fa-solid fa-key mr-1"></i>${t('badge_needs_login')}</span>` : `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400">${t('badge_guest')}</span>`}
+                ${s.custom_url ? `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 truncate max-w-[150px]" title="${s.custom_url}"><i class="fa-solid fa-link mr-1"></i>${t('badge_custom_url')}</span>` : ''}
+              </div>
+            </div>
+
+            <div class="pt-3 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-mono text-[11px]">${s.id}</span>
+              <div class="flex items-center space-x-2">
+                <button onclick="deleteSource('${s.id}')" class="text-slate-500 hover:text-red-400 p-1 transition" title="${t('btn_delete_source')}">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function toggleSource(id, enabled) {
+      try {
+        await fetch("/api/sources/toggle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id, enabled: enabled })
+        });
+        loadSources();
+      } catch (err) {
+        alert("Error updating source status: " + err.message);
+      }
+    }
+
+    async function deleteSource(id) {
+      if (!confirm(t("alert_confirm_del_src", { id }))) return;
+      try {
+        const res = await fetch("/api/sources/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadSources();
+        } else {
+          alert("Could not delete this source.");
+        }
+      } catch (err) {
+        alert("Error deleting source: " + err.message);
+      }
+    }
+
+    function renderCrawlSourcesCheckboxes(sources) {
+      const container = document.getElementById("crawl-sources-checkboxes");
+      if (!container) return;
+
+      container.innerHTML = sources.map(s => {
+        const isChecked = s.enabled ? "checked" : "";
+        return `
+          <label class="flex items-start space-x-2 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer select-none transition">
+            <input type="checkbox" name="crawl_source_cb" value="${s.id}" data-rec="${s.recommended ? '1' : '0'}" ${isChecked} class="mt-0.5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500">
+            <div class="text-xs">
+              <div class="font-medium text-slate-200 flex items-center space-x-1">
+                <span>${escapeHtml(s.name)}</span>
+                ${s.requires_vpn ? `<span title="${t('badge_needs_vpn')}" class="text-sky-400 text-[10px]"><i class="fa-solid fa-shield"></i></span>` : ''}
+              </div>
+              <span class="text-[10px] text-slate-500 block truncate max-w-[130px]">${escapeHtml(s.category || '')}</span>
+            </div>
+          </label>
+        `;
+      }).join("");
+    }
+
+    function setCrawlSourcesMode(mode) {
+      const checkboxes = document.querySelectorAll("input[name='crawl_source_cb']");
+      checkboxes.forEach(cb => {
+        if (mode === 'all') {
+          cb.checked = true;
+        } else if (mode === 'none') {
+          cb.checked = false;
+        } else if (mode === 'recommended') {
+          cb.checked = cb.getAttribute("data-rec") === "1";
+        }
+      });
+    }
+
+    function updateSourceFilterDropdown(sources) {
+      const select = document.getElementById("filter-source");
+      if (!select) return;
+      const currentVal = select.value;
+      let html = `<option value="all">${t('filter_source_all')}</option>`;
+      sources.forEach(s => {
+        html += `<option value="${s.id}">${s.name}</option>`;
+      });
+      select.innerHTML = html;
+      select.value = currentVal;
+    }
+
+    // Modal Add Source
+    function openAddSourceModal() {
+      document.getElementById("add-source-modal").classList.remove("hidden");
+    }
+    function closeAddSourceModal() {
+      document.getElementById("add-source-modal").classList.add("hidden");
+    }
+
+    async function submitAddSource() {
+      const id = document.getElementById("new-source-id").value.trim().toLowerCase();
+      const name = document.getElementById("new-source-name").value.trim();
+      const category = document.getElementById("new-source-category").value;
+      const color = document.getElementById("new-source-color").value;
+      const url = document.getElementById("new-source-url").value.trim();
+      const desc = document.getElementById("new-source-desc").value.trim();
+      const enabled = document.getElementById("new-source-enabled").checked;
+      const requiresVpn = document.getElementById("new-source-vpn").checked;
+      const recommended = document.getElementById("new-source-rec").checked;
+
+      if (!id || !name) {
+        alert(t("alert_enter_id_name"));
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/sources/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            name: name,
+            category: category,
+            badge_color: color,
+            custom_url: url,
+            description: desc,
+            enabled: enabled,
+            requires_vpn: requiresVpn,
+            recommended: recommended
+          })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert("Error: " + data.error);
+          return;
+        }
+        closeAddSourceModal();
+        loadSources();
+      } catch (err) {
+        alert("Error adding source: " + err.message);
+      }
+    }
+
+    function handleCrawlRemoteToggle(checked) {
+      const locSelect = document.getElementById("crawl-select-location");
+      if (checked) {
+        locSelect.value = "Remote";
+        const remoteSources = ["remotive", "itviec", "linkedin", "joywork", "glassdoor", "flexjobs"];
+        document.querySelectorAll("input[name='crawl_source_cb']").forEach(cb => {
+          if (remoteSources.includes(cb.value.toLowerCase())) {
+            cb.checked = true;
+          }
+        });
+      }
+    }
+
+    // Keyword & Location Dropdown change handlers
+    function handleCrawlKeywordChange(val) {
+      const customBox = document.getElementById("crawl-custom-keyword-box");
+      if (val === "__custom__") {
+        customBox.classList.remove("hidden");
+        document.getElementById("crawl-custom-keyword").focus();
+      } else {
+        customBox.classList.add("hidden");
+      }
+    }
+
+    function handleCrawlLocationChange(val) {
+      const customBox = document.getElementById("crawl-custom-location-box");
+      if (val === "__custom__") {
+        customBox.classList.remove("hidden");
+        document.getElementById("crawl-custom-location").focus();
+      } else {
+        customBox.classList.add("hidden");
+      }
+      const remoteToggle = document.getElementById("crawl-toggle-remote");
+      if (remoteToggle) {
+        remoteToggle.checked = (val && val.toLowerCase().includes("remote"));
+      }
+    }
+
+    function handleReportKeywordChange(val) {
+      const customBox = document.getElementById("report-custom-keyword-box");
+      if (val === "__custom__") {
+        customBox.classList.remove("hidden");
+        document.getElementById("report-custom-keyword").focus();
+      } else {
+        customBox.classList.add("hidden");
+      }
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        loadJobs(1);
+      }, 350);
+    }
+
+    async function loadJobs(page = 1) {
+      currentPage = page;
+      const kw = document.getElementById("filter-keyword").value.trim();
+      const jobType = document.getElementById("filter-job-type") ? document.getElementById("filter-job-type").value : "all";
+      const region = document.getElementById("filter-region") ? document.getElementById("filter-region").value : "all";
+      const workplaceMode = document.getElementById("filter-workplace-mode") ? document.getElementById("filter-workplace-mode").value : "all";
+      const src = document.getElementById("filter-source").value;
+      const hasSal = document.getElementById("filter-has-salary").checked ? "1" : "0";
+      const isRemote = document.getElementById("filter-is-remote").checked ? "1" : "0";
+
+      const params = new URLSearchParams({
+        page: page,
+        limit: 18,
+        keyword: kw,
+        job_type: jobType,
+        region: region,
+        workplace_mode: workplaceMode,
+        source: src,
+        has_salary: hasSal,
+        is_remote: isRemote
+      });
+
+      const container = document.getElementById("jobs-container");
+      container.innerHTML = `
+        <div class="col-span-full py-16 text-center text-slate-500">
+          <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-500 mb-2"></i>
+          <p>${t('loading_jobs')}</p>
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`/api/jobs?${params.toString()}`);
+        const data = await res.json();
+        document.getElementById("jobs-count-text").innerText = data.total;
+
+        if (!data.jobs || data.jobs.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full py-16 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
+              <i class="fa-regular fa-folder-open text-4xl mb-3 text-slate-600"></i>
+              <p class="text-base text-slate-400 font-medium">${t('empty_jobs_title')}</p>
+              <p class="text-xs text-slate-500 mt-1">${t('empty_jobs_sub')}</p>
+            </div>
+          `;
+          document.getElementById("pagination-bar").innerHTML = "";
+          return;
+        }
+
+        container.innerHTML = data.jobs.map(j => renderJobCard(j)).join("");
+        renderPagination(data.page, data.total_pages, data.total);
+      } catch (err) {
+        container.innerHTML = `<div class="col-span-full py-12 text-center text-red-400">Error: ${err.message}</div>`;
+      }
+    }
+
+    function renderJobCard(j) {
+      const sourceColors = {
+        itviec: "bg-red-950/80 text-red-300 border-red-800/60",
+        careerviet: "bg-blue-950/80 text-blue-300 border-blue-800/60",
+        topcv: "bg-amber-950/80 text-amber-300 border-amber-800/60",
+        joywork: "bg-teal-950/80 text-teal-300 border-teal-800/60",
+        linkedin: "bg-sky-950/80 text-sky-300 border-sky-800/60",
+        flexjobs: "bg-purple-950/80 text-purple-300 border-purple-800/60",
+        glassdoor: "bg-emerald-950/80 text-emerald-300 border-emerald-800/60",
+        remotive: "bg-cyan-950/80 text-cyan-300 border-cyan-800/60",
+        facebook: "bg-indigo-950/80 text-indigo-300 border-indigo-800/60"
+      };
+      const badgeClass = sourceColors[j.source.toLowerCase()] || "bg-slate-800 text-slate-300 border-slate-700";
+
+      // Tags
+      const tags = (j.requirements || "").split(",").map(t => t.trim()).filter(Boolean);
+      const tagsHtml = tags.slice(0, 4).map(t => `<span class="px-2 py-0.5 rounded-md bg-slate-800/80 text-slate-300 text-[11px] border border-slate-700/50">${escapeHtml(t)}</span>`).join("");
+
+      // Localized Job Type & Workplace Mode labels
+      let jtLabel = t('type_fulltime');
+      if (j.job_type && j.job_type.toLowerCase().includes('intern')) jtLabel = t('type_intern');
+      else if (j.job_type && j.job_type.toLowerCase().includes('contract')) jtLabel = t('type_contract');
+      else if (j.job_type && j.job_type.toLowerCase().includes('part')) jtLabel = t('type_parttime');
+
+      let wmLabel = t('mode_onsite');
+      if (j.workplace_mode === 'Remote' || j.is_remote) wmLabel = t('mode_remote');
+      else if (j.workplace_mode === 'Hybrid') wmLabel = t('mode_hybrid');
+
+      return `
+        <div class="bg-slate-900 border border-slate-800/90 rounded-2xl p-5 hover:border-slate-700 hover:shadow-lg hover:shadow-emerald-950/10 transition flex flex-col justify-between group">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${badgeClass}">
+                  ${j.source}
+                </span>
+
+                <!-- Job Type Badge -->
+                ${j.job_type && !j.job_type.toLowerCase().includes('full') ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60 flex items-center space-x-1">
+                    <i class="fa-solid fa-graduation-cap text-[9px]"></i>
+                    <span>${escapeHtml(jtLabel)}</span>
+                  </span>
+                ` : `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+                    ${escapeHtml(jtLabel)}
+                  </span>
+                `}
+
+                <!-- Workplace Mode Badge -->
+                ${j.workplace_mode === 'Remote' || j.is_remote ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-700/60 flex items-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-house-laptop text-[9px]"></i>
+                    <span>${escapeHtml(wmLabel)}</span>
+                  </span>
+                ` : j.workplace_mode === 'Hybrid' ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-950/90 text-indigo-300 border border-indigo-700/60 flex items-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-rotate text-[9px]"></i>
+                    <span>${escapeHtml(wmLabel)}</span>
+                  </span>
+                ` : `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50">
+                    ${escapeHtml(wmLabel)}
+                  </span>
+                `}
+              </div>
+
+              <span class="text-xs text-slate-500 flex items-center space-x-1">
+                <i class="fa-regular fa-clock text-[10px]"></i>
+                <span>${j.crawled_at ? j.crawled_at.split('T')[0] || j.crawled_at.split(' ')[0] : t('card_recent')}</span>
+              </span>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-slate-100 group-hover:text-emerald-400 transition text-sm leading-snug line-clamp-2" title="${escapeHtml(j.title)}">
+                ${escapeHtml(j.title)}
+              </h3>
+              <p class="text-xs text-slate-400 mt-1 flex items-center space-x-1.5 truncate" title="${escapeHtml(j.company)}">
+                <i class="fa-regular fa-building text-slate-500 text-[11px]"></i>
+                <span>${escapeHtml(j.company || 'Unknown Company')}</span>
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-xs">
+              <div class="px-2.5 py-1 rounded-lg bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 font-medium flex items-center space-x-1">
+                <i class="fa-solid fa-sack-dollar text-[11px]"></i>
+                <span>${escapeHtml(j.salary_raw && j.salary_raw !== 'Thỏa thuận' ? j.salary_raw : t('salary_negotiable'))}</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg bg-slate-800/60 text-slate-300 border border-slate-700/60 flex items-center space-x-1 truncate max-w-[170px]" title="${escapeHtml(j.location)}">
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[11px]"></i>
+                <span class="truncate font-medium">${escapeHtml(j.deployment_region || j.location || 'Vietnam')}</span>
+              </div>
+            </div>
+
+            ${tagsHtml ? `<div class="flex flex-wrap gap-1 pt-1">${tagsHtml}</div>` : ''}
+          </div>
+
+          <div class="pt-4 mt-3 border-t border-slate-800/70 flex items-center justify-between">
+            <button onclick="viewJobDetail(${j.id})" class="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center space-x-1">
+              <span>${t('card_view_detail')}</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+            ${j.job_url ? `
+              <a href="${j.job_url}" target="_blank" class="text-slate-500 hover:text-slate-300 text-xs p-1" title="${t('card_open_origin')}">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPagination(page, totalPages, total) {
+      const bar = document.getElementById("pagination-bar");
+      if (totalPages <= 1) {
+        bar.innerHTML = "";
+        return;
+      }
+      bar.innerHTML = `
+        <div class="text-xs text-slate-400">${t('page_info', { page, total_pages: totalPages, total })}</div>
+        <div class="flex space-x-1">
+          <button onclick="loadJobs(${page - 1})" ${page <= 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : ''} class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-medium transition">
+            <i class="fa-solid fa-chevron-left mr-1"></i> ${t('page_prev')}
+          </button>
+          <button onclick="loadJobs(${page + 1})" ${page >= totalPages ? 'disabled class="opacity-40 cursor-not-allowed"' : ''} class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-medium transition">
+            ${t('page_next')} <i class="fa-solid fa-chevron-right ml-1"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    async function viewJobDetail(id) {
+      try {
+        const res = await fetch(`/api/jobs/${id}`);
+        const job = await res.json();
+        
+        document.getElementById("modal-source-badge").innerText = job.source;
+        document.getElementById("modal-job-title").innerText = job.title;
+        document.getElementById("modal-company-name").innerText = job.company;
+        document.getElementById("modal-salary").innerText = (job.salary_raw && job.salary_raw !== 'Thỏa thuận') ? job.salary_raw : t('salary_negotiable');
+        
+        let jtLabel = t('type_fulltime');
+        if (job.job_type && job.job_type.toLowerCase().includes('intern')) jtLabel = t('type_intern');
+        else if (job.job_type && job.job_type.toLowerCase().includes('contract')) jtLabel = t('type_contract');
+        else if (job.job_type && job.job_type.toLowerCase().includes('part')) jtLabel = t('type_parttime');
+        document.getElementById("modal-job-type").innerText = jtLabel;
+
+        let wmLabel = t('mode_onsite');
+        if (job.workplace_mode === 'Remote' || job.is_remote) wmLabel = t('mode_remote');
+        else if (job.workplace_mode === 'Hybrid') wmLabel = t('mode_hybrid');
+        document.getElementById("modal-workplace-mode").innerText = wmLabel;
+
+        document.getElementById("modal-location").innerText = job.location || "Vietnam";
+        document.getElementById("modal-description").innerText = job.job_description || "No detailed description provided.";
+        document.getElementById("modal-crawled-at").innerText = `${t('modal_crawled_at')} ${job.crawled_at || t('card_recent')}`;
+
+        const urlEl = document.getElementById("modal-job-url");
+        if (job.job_url && job.job_url.startsWith("http")) {
+          urlEl.href = job.job_url;
+          urlEl.classList.remove("hidden");
+        } else {
+          urlEl.classList.add("hidden");
+        }
+
+        const skillsContainer = document.getElementById("modal-skills");
+        const skills = (job.requirements || "").split(",").map(s => s.trim()).filter(Boolean);
+        if (skills.length > 0) {
+          skillsContainer.innerHTML = skills.map(s => `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs border border-slate-700">${escapeHtml(s)}</span>`).join("");
+          document.getElementById("modal-skills-box").classList.remove("hidden");
+        } else {
+          document.getElementById("modal-skills-box").classList.add("hidden");
+        }
+
+        document.getElementById("job-modal").classList.remove("hidden");
+      } catch (err) {
+        alert("Cannot load job details: " + err.message);
+      }
+    }
+
+    function closeJobModal() {
+      document.getElementById("job-modal").classList.add("hidden");
+    }
+
+    async function loadReports() {
+      const container = document.getElementById("reports-list");
+      try {
+        const res = await fetch("/api/reports");
+        const list = await res.json();
+
+        if (!list || list.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full py-16 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
+              <i class="fa-solid fa-chart-line text-4xl mb-3 text-slate-600"></i>
+              <p class="text-base text-slate-400 font-medium">${t('empty_reports_title')}</p>
+              <p class="text-xs text-slate-500 mt-1">${t('empty_reports_sub')}</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = list.map(r => `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 hover:shadow-xl transition flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <span class="px-2 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-800 font-semibold uppercase text-[10px]">
+                  ${escapeHtml(r.llm_model || 'Gemini')}
+                </span>
+                <span>${r.created_at ? r.created_at.split('T')[0] || r.created_at.split(' ')[0] : ''}</span>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-100">${escapeHtml(r.keyword)}</h3>
+                <p class="text-xs text-slate-400 mt-1">${t('report_card_based_on', { count: r.total_jobs_analyzed })}</p>
+              </div>
+            </div>
+            <div class="pt-4 mt-3 border-t border-slate-800 flex items-center justify-between">
+              <button onclick="viewReportDetail(${r.id})" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-book-open"></i>
+                <span>${t('btn_read_report')}</span>
+              </button>
+            </div>
+          </div>
+        `).join("");
+      } catch (err) {
+        container.innerHTML = `<div class="col-span-full py-12 text-center text-red-400">Error loading reports: ${err.message}</div>`;
+      }
+    }
+
+    async function viewReportDetail(id) {
+      try {
+        const res = await fetch(`/api/reports/${id}`);
+        const r = await res.json();
+
+        document.getElementById("report-modal-title").innerText = `${t('report_modal_title_prefix')} ${r.keyword.toUpperCase()}`;
+        document.getElementById("report-modal-content").innerHTML = marked.parse(r.summary_markdown || "No content");
+        document.getElementById("report-modal-meta").innerText = t('report_meta_info', {
+          model: r.llm_model,
+          count: r.total_jobs_analyzed,
+          date: r.created_at
+        });
+        document.getElementById("report-view-modal").classList.remove("hidden");
+      } catch (err) {
+        alert("Error loading report: " + err.message);
+      }
+    }
+
+    function closeReportViewModal() {
+      document.getElementById("report-view-modal").classList.add("hidden");
+    }
+
+    // Crawl Modal
+    function openCrawlModal() {
+      renderCrawlSourcesCheckboxes(globalSources);
+      document.getElementById("crawl-modal").classList.remove("hidden");
+    }
+    function closeCrawlModal() {
+      document.getElementById("crawl-modal").classList.add("hidden");
+    }
+
+    async function submitCrawl() {
+      // 1. Resolve Keyword
+      const selectKw = document.getElementById("crawl-select-keyword").value;
+      let kw = selectKw;
+      if (selectKw === "__custom__") {
+        kw = document.getElementById("crawl-custom-keyword").value.trim();
+      }
+      if (!kw) {
+        alert(t("alert_enter_kw"));
+        return;
+      }
+
+      // 2. Resolve Location
+      const selectLoc = document.getElementById("crawl-select-location").value;
+      let loc = selectLoc;
+      if (selectLoc === "__custom__") {
+        loc = document.getElementById("crawl-custom-location").value.trim();
+      }
+
+      // 3. Resolve Selected Sources
+      const checkedBoxes = Array.from(document.querySelectorAll("input[name='crawl_source_cb']:checked"));
+      if (checkedBoxes.length === 0) {
+        alert(t("alert_select_one_src"));
+        return;
+      }
+      const sources = checkedBoxes.map(cb => cb.value).join(",");
+
+      // 4. Resolve Limit & Remote Mode
+      const limit = parseInt(document.getElementById("crawl-input-limit").value) || 20;
+      const isRemote = document.getElementById("crawl-toggle-remote") ? document.getElementById("crawl-toggle-remote").checked : false;
+
+      closeCrawlModal();
+
+      try {
+        const res = await fetch("/api/crawl", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ keyword: kw, location: loc || null, sources: sources, limit: limit, is_remote: isRemote })
+        });
+        const data = await res.json();
+        showTaskBanner(t("task_crawl_banner", {
+          kw: kw,
+          loc: isRemote ? "🌐 Remote / Online" : (loc ? loc : "Global/Nationwide"),
+          src: sources
+        }));
+      } catch (err) {
+        alert("Error triggering crawl: " + err.message);
+      }
+    }
+
+    // Report Modal
+    function openReportModal() {
+      document.getElementById("report-modal").classList.remove("hidden");
+    }
+    function closeReportModal() {
+      document.getElementById("report-modal").classList.add("hidden");
+    }
+
+    async function submitReport() {
+      const selectKw = document.getElementById("report-select-keyword").value;
+      let kw = selectKw;
+      if (selectKw === "__custom__") {
+        kw = document.getElementById("report-custom-keyword").value.trim();
+      }
+      if (!kw) {
+        alert(t("alert_enter_kw"));
+        return;
+      }
+      closeReportModal();
+
+      try {
+        const res = await fetch("/api/report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ keyword: kw })
+        });
+        const data = await res.json();
+        showTaskBanner(t("task_report_banner", { kw: kw }));
+      } catch (err) {
+        alert("Error generating report: " + err.message);
+      }
+    }
+
+    function showTaskBanner(msg) {
+      const banner = document.getElementById("task-banner");
+      document.getElementById("task-message").innerText = msg;
+      banner.classList.remove("hidden");
+    }
+
+    function startTaskPolling() {
+      setInterval(async () => {
+        try {
+          const res = await fetch("/api/tasks");
+          const tasks = await res.json();
+          if (!tasks || tasks.length === 0) return;
+
+          const latest = tasks[0];
+          const banner = document.getElementById("task-banner");
+
+          // On first page load, if latest task is already finished from a previous run,
+          // ignore it so we don't trigger unnecessary reloads or notifications.
+          if (isInitialTaskCheck) {
+            isInitialTaskCheck = false;
+            lastHandledTaskId = latest.id;
+            lastHandledTaskStatus = latest.status;
+            if (latest.status === "running") {
+              document.getElementById("task-message").innerText = `[${latest.type}] ${latest.message}`;
+              banner.classList.remove("hidden");
+            }
+            return;
+          }
+
+          // If this task state has already been processed, skip completely
+          if (latest.id === lastHandledTaskId && latest.status === lastHandledTaskStatus) {
+            return;
+          }
+
+          // Task status has transitioned
+          lastHandledTaskId = latest.id;
+          lastHandledTaskStatus = latest.status;
+
+          if (latest.status === "running") {
+            document.getElementById("task-message").innerText = `[${latest.type}] ${latest.message}`;
+            banner.classList.remove("hidden");
+          } else if (latest.status === "success") {
+            document.getElementById("task-message").innerText = `✔ [${latest.type}] ${latest.message}`;
+            setTimeout(() => {
+              banner.classList.add("hidden");
+            }, 4500);
+            // Reload ONLY once when background task finishes!
+            loadStats();
+            loadJobs(currentPage);
+            loadReports();
+          } else if (latest.status === "failed") {
+            document.getElementById("task-message").innerText = `✖ [${latest.type}] ${latest.message}`;
+            setTimeout(() => {
+              banner.classList.add("hidden");
+            }, 6000);
+          }
+        } catch (e) {}
+      }, 3000);
+    }
+
+    function resetFilters() {
+      document.getElementById("filter-keyword").value = "";
+      if (document.getElementById("filter-job-type")) document.getElementById("filter-job-type").value = "all";
+      if (document.getElementById("filter-region")) document.getElementById("filter-region").value = "all";
+      if (document.getElementById("filter-workplace-mode")) document.getElementById("filter-workplace-mode").value = "all";
+      if (document.getElementById("filter-source")) document.getElementById("filter-source").value = "all";
+      document.getElementById("filter-has-salary").checked = false;
+      document.getElementById("filter-is-remote").checked = false;
+      loadJobs(1);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

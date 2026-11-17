@@ -1,0 +1,101 @@
+[
+  {
+    "id": "itviec",
+    "name": "ITviec",
+    "category": "Tech VN",
+    "badge_color": "red",
+    "enabled": true,
+    "recommended": true,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Nền tảng việc làm CNTT & Phần mềm hàng đầu VN (Tech stack, phúc lợi rõ ràng)"
+  },
+  {
+    "id": "careerviet",
+    "name": "CareerViet",
+    "category": "Đa ngành VN",
+    "badge_color": "blue",
+    "enabled": true,
+    "recommended": true,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Doanh nghiệp lớn, Khối Ngân hàng, Tài chính & FDI tại Việt Nam"
+  },
+  {
+    "id": "joywork",
+    "name": "JoyWork",
+    "category": "Startup & Culture VN",
+    "badge_color": "teal",
+    "enabled": true,
+    "recommended": true,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Nền tảng việc làm văn hóa tốt, tích hợp API JSON chính thức cực kỳ ổn định"
+  },
+  {
+    "id": "linkedin",
+    "name": "LinkedIn",
+    "category": "Quốc tế & VN",
+    "badge_color": "sky",
+    "enabled": true,
+    "recommended": true,
+    "requires_vpn": true,
+    "requires_login": false,
+    "description": "Mạng xã hội nghề nghiệp toàn cầu (Nên bật VPN nếu truy cập từ Việt Nam)"
+  },
+  {
+    "id": "glassdoor",
+    "name": "Glassdoor",
+    "category": "Quốc tế & Remote",
+    "badge_color": "emerald",
+    "enabled": true,
+    "recommended": false,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Việc làm quốc tế, các vị trí Remote trả USD và đánh giá công ty"
+  },
+  {
+    "id": "topcv",
+    "name": "TopCV",
+    "category": "Đa ngành VN",
+    "badge_color": "amber",
+    "enabled": false,
+    "recommended": false,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Nền tảng tuyển dụng phổ biến (Có lọc chặt chẽ tiêu đề để tránh tin rác quảng cáo)"
+  },
+  {
+    "id": "facebook",
+    "name": "Facebook Fanpage",
+    "category": "Mạng xã hội",
+    "badge_color": "indigo",
+    "enabled": true,
+    "recommended": false,
+    "requires_vpn": false,
+    "requires_login": true,
+    "description": "Cào bài tuyển dụng Fanpage/Group qua Playwright (Cần chạy fb-login 1 lần trước)"
+  },
+  {
+    "id": "flexjobs",
+    "name": "FlexJobs",
+    "category": "Remote Global",
+    "badge_color": "purple",
+    "enabled": false,
+    "recommended": false,
+    "requires_vpn": true,
+    "requires_login": false,
+    "description": "Nền tảng việc làm Remote & Freelance chuyên nghiệp quốc tế"
+  },
+  {
+    "id": "remotive",
+    "name": "Remotive",
+    "category": "Remote Global 100%",
+    "badge_color": "emerald",
+    "enabled": true,
+    "recommended": true,
+    "requires_vpn": false,
+    "requires_login": false,
+    "description": "Nền tảng việc làm Remote & Online toàn cầu cho IT/Dev/AI (API chính thức, 100% Remote, lương USD)"
+  }
+]

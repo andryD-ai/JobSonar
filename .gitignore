@@ -1,0 +1,59 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python byte-code and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables & secrets (API keys, tokens)
+.env
+.env.*
+!.env.example
+
+# Local SQLite databases, WAL logs & backups
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.bak
+data/*.db
+data/*.db-*
+data/*.db-wal
+data/*.db-shm
+data/*.bak
+data/*.sqlite*
+
+# Browser session & profile data (Playwright)
+data/browser_profile/
+.playwright/
+test-results/
+playwright-report/
+
+# Generated LLM reports (keep directory with .gitkeep)
+reports/*
+!reports/.gitkeep
+
+# Application logs
+*.log
+logs/
+
+# IDE & Editor temporary files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Operating System files
+.DS_Store
+Thumbs.db
