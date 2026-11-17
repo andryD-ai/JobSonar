@@ -1,120 +1,162 @@
-# 🔍 Vietnam Job Market Scanner & LLM Synthesizer
+# 🔍 cv_EasyScan: Tech Job Market Scanner & AI Synthesizer
 
-Hệ thống tự động tìm kiếm, cào dữ liệu việc làm từ các trang tuyển dụng hàng đầu tại Việt Nam & quốc tế (**ITviec**, **CareerViet**, **TopCV**, **JoyWork**, **LinkedIn**, **FlexJobs**, **Glassdoor**, **Facebook Fanpage**), lưu trữ cơ sở dữ liệu cục bộ **SQLite3** có cơ chế khử trùng lặp (deduplication) và sử dụng **Google Gemini** để phân tích, tổng hợp báo cáo thị trường lao động chi tiết.
+A modern, high-performance toolkit to discover, crawl, normalize, and analyze tech and remote job postings across premier recruitment platforms and social networks (**ITviec**, **CareerViet**, **Remotive**, **TopCV**, **JoyWork**, **LinkedIn**, **Glassdoor**, **FlexJobs**, **Facebook**).
 
----
-
-## 🌟 Tính năng nổi bật
-
-1. **Bộ cào dữ liệu đa nguồn (Multi-source Crawler)**:
-   - **ITviec**: Cào dữ liệu chuyên sâu cho ngành IT/Software (Tech stack, phổ lương, phúc lợi).
-   - **CareerViet** (trước đây là CareerBuilder VN): Đa dạng ngành nghề và doanh nghiệp FDI.
-   - **TopCV**: Hệ sinh thái tuyển dụng phổ biến nhất Việt Nam.
-   - **JoyWork (`joywork.vn`)**: Nền tảng tuyển dụng minh bạch tại VN qua API JSON chính thức.
-   - **LinkedIn**: Cào việc làm công khai qua LinkedIn Guest Jobs Search + Playwright fallback.
-   - **FlexJobs & Glassdoor**: Hỗ trợ cào việc làm remote/quốc tế (có cơ chế phát hiện security/anti-bot gate rõ ràng).
-   - **Facebook Fanpage / Group**: Mô phỏng trình duyệt thật qua **Playwright**, sử dụng **Persistent Browser Profile** (đăng nhập 1 lần, không lo checkpoint/khóa tài khoản), **nghỉ ngẫu nhiên lên đến 10 giây** giữa các lần cuộn để chống bot, tự động click nút *"Xem thêm"* để lấy toàn bộ mô tả công việc (JD).
-   - Hỗ trợ **Import file Facebook offline** (JSON, HTML, TXT) an toàn tuyệt đối.
-
-2. **Cơ sở dữ liệu cục bộ SQLite3**:
-   - Gọn nhẹ, không cần cài đặt thêm server database (MySQL/PostgreSQL).
-   - Khử trùng lặp tự động bằng hàm băm `job_hash` (dựa trên URL hoặc Source + Company + Title). Nếu đã có, hệ thống sẽ cập nhật thông tin mới nhất mà không tạo bản ghi rác.
-   - Đánh index tăng tốc độ tìm kiếm theo từ khóa.
-
-3. **Tổng hợp báo cáo thị trường thông minh với LLM (Google Gemini)**:
-   - Tự động thống kê: **Phổ lương thực tế** (Min, Max, Median theo cấp bậc), **Top Tech Stack & Kỹ năng được săn đón**, **Phân bố địa lý** (HN, HCM, Remote), **Top nhà tuyển dụng**.
-   - Đưa ra **Lời khuyên thực chiến cho ứng viên**: Tối ưu CV, lộ trình học kỹ năng thiếu hụt, chủ đề phỏng vấn.
-   - Xuất file báo cáo chuẩn Markdown (`reports/report_*.md`).
-
-4. **Giao diện dòng lệnh (CLI) đẹp mắt**:
-   - Sử dụng thư viện `rich` với bảng biểu, highlight màu sắc và thanh thông báo trực quan.
+Equipped with an **embedded SQLite3 engine** featuring intelligent deduplication and accent-insensitive full-text search, an **AI Synthesizer powered by Google Gemini**, and a responsive **Web UI with full i18n support (English, Vietnamese, Russian)**.
 
 ---
 
-## 📁 Cấu trúc thư mục
+## 🌟 Key Features
+
+### 1. Multi-Source Crawler Engine
+- **Remotive API**: 100% remote global tech jobs fetched via official JSON API with detailed tech stack tagging.
+- **ITviec**: Deep scraping for software engineering roles (tech stack, salary range, company culture, benefits).
+- **CareerViet** (formerly CareerBuilder Vietnam): Comprehensive enterprise, FDI, and tech listings.
+- **LinkedIn Jobs**: Public guest postings via LinkedIn API with headless Playwright fallback.
+- **JoyWork (`joywork.vn`)**: Direct integration with JoyWork's public JSON API.
+- **TopCV**: Popular Vietnamese job board integration with strict guardrail filtering to discard irrelevant ads.
+- **Glassdoor & FlexJobs**: International and remote job search with anti-bot challenge detection.
+- **Facebook Fanpages / Groups**: Automated scraping via **Playwright** using a **Persistent Browser Profile** (login once, zero checkpoint risk), human-like scrolling with **random sleep delays up to 10 seconds**, and auto-expanding post bodies. Also supports safe offline JSON/HTML/TXT file imports.
+
+### 2. Intelligent Guardrails & Deduplication
+- **Strict Relevance Filter (`is_keyword_relevant`)**: Ensures only position-relevant jobs are collected. Automatically discards off-topic positions (e.g. debt collection, real estate, telesales, retail, F&B) when searching for engineering roles.
+- **Adaptive Crawl Limit**: When requesting e.g. 50 jobs, if only 10 genuine matches exist, the crawler stops naturally at 10 without padding with irrelevant listings.
+- **SQLite3 Local Storage with Deduplication**: Employs SHA-256 / composite hashing (`job_hash`) to avoid duplicate records while updating salary and description fields in-place.
+- **Accent-Insensitive Search**: Custom SQLite normalization (`strip_accents`) allows seamless querying across Vietnamese and English (e.g. searching `ky su ai` or `AI Engineer` matches both `Kỹ sư AI` and `AI Engineer`).
+
+### 3. AI Market Intelligence (Google Gemini)
+- Automated statistical analysis of collected job listings:
+  - **Salary Benchmarks**: Min, max, and median salary ranges segmented by seniority level.
+  - **In-Demand Tech Stacks**: Most frequent programming languages, frameworks, cloud platforms, and AI tools.
+  - **Geographic & Workplace Trends**: Onsite vs. Hybrid vs. 100% Remote opportunities.
+  - **Actionable Candidate Advice**: Resume optimization tips, missing skill roadmaps, and interview preparation questions.
+- Exports comprehensive Markdown reports directly to `reports/`.
+
+### 4. Interactive Web UI with Multi-Language Support (i18n)
+- **Modern Dark UI**: Built with Tailwind CSS and FontAwesome, providing live search with debouncing (350ms), interactive modals, and real-time background task status banners.
+- **Rich Multi-Dimensional Filters**:
+  - **Job Type**: Full-time, Intern / Fresher, Contract / Freelance, Part-time.
+  - **Workplace Mode**: Remote / Online, Hybrid, On-site.
+  - **Region / Location**: All, Hanoi & North, HCMC & South, Da Nang & Central, Global / Worldwide.
+  - **Source Checklist**: Filter by recruitment portal, public salary flag, and remote toggle.
+- **Tri-Lingual Switcher**: Instant switching between **English (Default)**, **Vietnamese (Tiếng Việt)**, and **Russian (Русский)** with persistent `localStorage` preference.
+
+### 5. Blazing-Fast Environment Management with Astral `uv`
+- Complete `pyproject.toml` and `uv.lock` support for sub-second dependency installation and reproducible runtime environments.
+
+---
+
+## 📁 Repository Structure
 
 ```text
 cv_scan/
-├── config/
-│   ├── __init__.py
-│   └── settings.py          # Cấu hình đường dẫn, API key, timeout, user-agent
-├── crawlers/
-│   ├── base.py              # Interface chuẩn cho mọi crawler
-│   ├── itviec.py            # Module cào ITviec
-│   ├── careerviet.py        # Module cào CareerViet
-│   ├── topcv.py             # Module cào TopCV (Playwright + HTTP)
-│   ├── joywork.py           # Module cào JoyWork (joywork.vn API)
-│   ├── linkedin.py          # Module cào LinkedIn Jobs
-│   ├── flexjobs.py          # Module cào FlexJobs
-│   ├── glassdoor.py         # Module cào Glassdoor
-│   ├── facebook.py          # Module cào Fanpage Facebook (Persistent Profile + Random Sleep)
-│   └── factory.py           # Quản lý và gọi crawler theo tên
+├── config/                  # App settings and dynamic sources configuration
+│   ├── settings.py          # Environment loader, timeouts, default models
+│   └── sources_config.py    # Recruitment sources metadata and toggle manager
+├── crawlers/                # Multi-platform crawlers
+│   ├── base.py              # Base crawler interface with HTTPX & Playwright
+│   ├── careerviet.py        # CareerViet crawler
+│   ├── facebook.py          # Facebook persistent browser crawler
+│   ├── factory.py           # Crawler registry and factory
+│   ├── flexjobs.py          # FlexJobs remote crawler
+│   ├── glassdoor.py         # Glassdoor crawler
+│   ├── itviec.py            # ITviec tech crawler
+│   ├── joywork.py           # JoyWork JSON API crawler
+│   ├── linkedin.py          # LinkedIn guest search crawler
+│   ├── remotive.py          # Remotive 100% remote API crawler
+│   └── topcv.py             # TopCV crawler with relevance guardrails
 ├── data/
-│   ├── jobs.db              # File SQLite database tự động khởi tạo
-│   └── browser_profile/     # Lưu session đăng nhập Facebook an toàn
-├── db/
-│   ├── database.py          # Kết nối SQLite & khởi tạo bảng
-│   ├── models.py            # Schema dữ liệu JobItem & ReportItem
-│   └── repository.py        # Các hàm CRUD, deduplication, search
-├── llm/
-│   ├── client.py            # Kết nối Google Gemini (hỗ trợ OpenAI & Ollama)
-│   ├── prompts.py           # Prompt chuyên gia phân tích thị trường
-│   └── synthesizer.py       # Gom dữ liệu từ DB, gọi LLM và xuất báo cáo
-├── reports/                 # Thư mục lưu các file báo cáo Markdown sinh ra
-├── utils/
-│   ├── logger.py            # Rich logging
-│   └── text_cleaner.py      # Làm sạch HTML, regex trích xuất lương, tạo hash
-├── cli.py                   # Giao diện dòng lệnh CLI
-├── main.py                  # Điểm khởi chạy chính
-├── requirements.txt         # Thư viện phụ thuộc
-└── .env.example             # Mẫu biến môi trường
+│   ├── sources.json         # Default sources configuration
+│   └── .gitkeep             # Local database directory (jobs.db ignored by git)
+├── db/                      # SQLite3 database layer
+│   ├── database.py          # SQLite connection manager with strip_accents UDF
+│   ├── models.py            # Pydantic & dataclass schemas (JobItem, ReportItem)
+│   └── repository.py        # CRUD repository, filtered pagination, deduplication
+├── llm/                     # LLM synthesis engine
+│   ├── client.py            # Google Gemini client (with OpenAI / Ollama fallbacks)
+│   ├── prompts.py           # Analytical prompts for market synthesis
+│   └── synthesizer.py       # Data aggregator and Markdown report exporter
+├── reports/                 # Output directory for generated reports (.gitkeep)
+├── tests/                   # Automated test suite
+│   ├── sample_fb_posts.json # Mock Facebook posts for offline testing
+│   └── test_new_crawlers.py # Unit tests for crawlers and filters
+├── utils/                   # Shared utilities
+│   ├── logger.py            # Rich color logging
+│   └── text_cleaner.py      # Accent normalization, salary parsing, relevance filter
+├── bin/                     # Convenience bash automation scripts
+│   ├── setup_env.sh         # One-click environment bootstrap with uv
+│   ├── common.sh            # Common script helpers and path discovery
+│   ├── web.sh               # Launch local Web UI server
+│   ├── crawl.sh             # Quick crawl runner
+│   ├── menu.sh              # Interactive terminal dashboard
+│   ├── report.sh            # Trigger AI market report
+│   ├── run_all.sh           # End-to-end pipeline (crawl -> save -> report)
+│   ├── stats.sh             # Display database statistics
+│   ├── fb_login.sh          # One-time Facebook browser login
+│   └── fb_crawl.sh          # Facebook Fanpage crawler
+├── web/                     # Web application
+│   ├── index.html           # Single-page application with EN/VI/RU i18n
+│   └── server.py            # Lightweight Python HTTP server & REST API
+├── cli.py                   # Command-line interface
+├── main.py                  # Main entry point
+├── pyproject.toml           # Project metadata & dependencies
+├── requirements.txt         # Standard requirements file
+├── uv.lock                  # Pinned dependencies lockfile
+└── .env.example             # Environment template
 ```
 
 ---
 
-## 🚀 Cài đặt & Cấu hình
+## 🚀 Getting Started
 
-### 1. Chuẩn bị môi trường Python
+### Prerequisites
+- **Python 3.10+**
+- **uv** (recommended for blazing-fast package installation)
 
-Yêu cầu: **Python 3.10+**.
+### 1. Installation
 
+#### Method A: One-Click Setup with `uv` (Recommended)
 ```bash
-# Di chuyển vào thư mục dự án
-cd cv_scan
+# Clone the repository
+git clone git@github.com:andryD-ai/cv_EasyScan.git
+cd cv_EasyScan
 
-# --- CÁCH 1: Khởi tạo tự động 1 lệnh bằng UV (Khuyến nghị) ---
+# Run the automated setup script
 ./bin/setup_env.sh
+```
+This script automatically:
+1. Detects or installs Astral `uv`.
+2. Creates `.venv` using `uv venv`.
+3. Installs dependencies in milliseconds via `uv pip install -r requirements.txt`.
+4. Installs Playwright Chromium headless browser.
+5. Prepares `.env` from `.env.example`.
 
-# --- CÁCH 2: Cài đặt thủ công bằng UV (Astral) ---
-# 1. Tạo môi trường ảo
+#### Method B: Manual Setup with `uv`
+```bash
 uv venv .venv
-
-# 2. Kích hoạt môi trường ảo
 source .venv/bin/activate
-
-# 3. Cài đặt các thư viện cần thiết cực nhanh bằng uv pip
 uv pip install -r requirements.txt
-
-# 4. Cài đặt Chromium cho Playwright (dùng cho LinkedIn, Glassdoor, Facebook)
 uv run playwright install chromium
-
-# --- CÁCH 3: Cài đặt truyền thống bằng python3-venv & pip ---
-# python3 -m venv .venv
-# source .venv/bin/activate
-# pip install -r requirements.txt
-# playwright install chromium
 ```
 
-### 2. Cấu hình biến môi trường (`.env`)
+#### Method C: Standard Python venv
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium
+```
 
-Tạo file `.env` từ file mẫu `.env.example`:
+---
 
+### 2. Environment Configuration (`.env`)
+
+Copy the template:
 ```bash
 cp .env.example .env
 ```
 
-Mở file `.env` và điền **Google Gemini API Key** của bạn (Lấy miễn phí tại: [Google AI Studio](https://aistudio.google.com/)):
-
+Open `.env` and configure your **Google Gemini API Key** (obtain free at [Google AI Studio](https://aistudio.google.com/)):
 ```env
 GEMINI_API_KEY=AIzaSy...your_gemini_api_key_here
 GEMINI_MODEL=gemini-2.5-flash
@@ -123,114 +165,99 @@ DEFAULT_LLM_PROVIDER=gemini
 
 ---
 
-## 📖 Hướng dẫn sử dụng
+## 💻 Usage
 
-### 1. Cào tin tuyển dụng từ các trang web (`crawl`)
-Cào từ các trang ITviec, CareerViet, TopCV:
-
+### 1. Launch Interactive Web UI (Recommended)
 ```bash
-# Cào vị trí Python từ ITviec và CareerViet (mỗi nguồn 20 tin)
-python main.py crawl --keyword "Python" --sources itviec,careerviet --limit 20
+# Using the helper script:
+./bin/web.sh
 
-# Cào vị trí Golang từ tất cả các trang
-python main.py crawl -k "Golang" -s itviec,careerviet,topcv -l 30
-
-# Cào vị trí Data Engineer
-python main.py crawl -k "Data Engineer" -s itviec,careerviet
+# Or using uv run:
+uv run python web/server.py 8000
 ```
+Open your browser at **`http://localhost:8000`**. You can search, filter, trigger background crawlers, configure sources, and generate AI reports visually.
 
 ---
 
-### 2. Cào bài viết từ Facebook Fanpage (`fb-login` & `fb-crawl`)
-
-Để hạn chế tối đa bị checkpoint hoặc khóa tài khoản, hệ thống dùng cơ chế **Persistent Profile**:
-
-#### Bước 2.1: Đăng nhập Facebook 1 lần duy nhất
+### 2. Terminal Interactive Dashboard
 ```bash
-python main.py fb-login
+./bin/menu.sh
 ```
-- Trình duyệt sẽ mở ra trang Facebook.
-- Bạn đăng nhập tài khoản của mình (khuyên dùng nick phụ/clone).
-- Sau khi vào Newsfeed thành công, quay lại terminal nhấn `[ENTER]`. Session đăng nhập sẽ được lưu vĩnh viễn trong `data/browser_profile/`.
+Opens an interactive ncurses-style terminal menu to execute all tasks with guided prompts.
 
-#### Bước 2.2: Cào bài từ Fanpage
+---
+
+### 3. Command-Line Interface (CLI)
+
+#### A. Crawl Job Listings
 ```bash
-# Cào 15 bài từ một Fanpage/Group tuyển dụng bất kỳ
+# Crawl Python developer jobs from ITviec, CareerViet, and JoyWork (20 per source)
+python main.py crawl --keyword "Python" --sources itviec,careerviet,joywork --limit 20
+
+# Crawl AI Engineer jobs with location filtering (Hanoi, Da Nang)
+python main.py crawl -k "AI Engineer" -s itviec,careerviet,joywork,linkedin --location "Ha Noi, Da Nang" -l 30
+
+# Crawl 100% remote jobs using Remotive and LinkedIn Remote
+python main.py crawl -k "Data Engineer" -s remotive,linkedin --location "Remote" -l 20
+```
+
+#### B. Search Local Database
+```bash
+# Search stored jobs by keyword
+python main.py search --keyword "AI Engineer" --limit 10
+
+# Filter by source and salary availability
+python main.py search --keyword "Python" --source itviec --has-salary
+```
+
+#### C. Generate AI Market Intelligence Report
+```bash
+# Generate a comprehensive report for "AI Engineer"
+python main.py report --keyword "AI Engineer"
+
+# Generate and preview report directly in the terminal
+python main.py report --keyword "Python" --preview
+
+# Analyze up to 150 latest job listings
+python main.py report -k "Data Engineer" -l 150
+```
+Generated reports are saved as Markdown in `reports/report_<keyword>_<timestamp>.md`.
+
+#### D. End-to-End Pipeline
+Executes the full pipeline in one command: **Crawl -> Deduplicate & Save -> Analyze with Gemini -> Export Markdown Report**:
+```bash
+python main.py run --keyword "AI Engineer" --sources itviec,careerviet,remotive --limit 20 --report
+```
+
+#### E. View Database Statistics
+```bash
+python main.py stats
+```
+
+#### F. Facebook Fanpage Scraper
+```bash
+# Step 1: One-time manual login to save persistent session profile
+python main.py fb-login
+
+# Step 2: Scrape posts from a recruitment group or page (with anti-bot random delays up to 10s)
 python main.py fb-crawl --url "https://www.facebook.com/groups/itjobs.vietnam" --limit 15
 
-# Tùy chỉnh khoảng nghỉ ngẫu nhiên (chống bot, mặc định 2s - 10s)
-python main.py fb-crawl --url "https://www.facebook.com/ten_fanpage" --limit 20 --min-delay 3.0 --max-delay 10.0
-```
-
-#### Bước 2.3: Import bài viết Facebook từ file (Chế độ an toàn / Offline)
-Nếu bạn đã xuất sẵn bài viết ra file JSON, HTML hoặc TXT:
-```bash
+# Step 3: Offline safe import from existing JSON/HTML file
 python main.py fb-import --file tests/sample_fb_posts.json --keyword "Python"
 ```
 
 ---
 
-### 3. Dùng Gemini tổng hợp báo cáo thị trường (`report`)
-Đọc dữ liệu đã cào trong database SQLite và yêu cầu LLM phân tích chuyên sâu:
+## 🧪 Testing
 
+Run automated unit and integration tests:
 ```bash
-# Tạo báo cáo cho vị trí Python
-python main.py report --keyword "Python"
-
-# Tạo báo cáo và in trực tiếp toàn bộ nội dung lên màn hình Terminal
-python main.py report --keyword "Python" --preview
-
-# Phân tích tới 150 tin gần nhất
-python main.py report -k "Golang" -l 150
-```
-
-*File báo cáo định dạng Markdown sẽ được lưu tự động vào thư mục `reports/` (ví dụ: `reports/report_python_20261111_165500.md`).*
-
----
-
-### 4. Chạy toàn trình 1 lệnh duy nhất (`run`)
-Lệnh này sẽ tự động thực hiện: **Cào dữ liệu -> Khử trùng lặp & lưu vào SQLite -> Gọi Gemini phân tích -> Xuất file báo cáo Markdown**:
-
-```bash
-python main.py run --keyword "Python" --sources itviec,careerviet --limit 25 --report
+# Run crawler test suite
+uv run python tests/test_new_crawlers.py
 ```
 
 ---
 
-### 5. Xem thống kê dữ liệu trong SQLite (`stats`)
-Kiểm tra số lượng việc làm đã thu thập, nguồn dữ liệu và các báo cáo đã tạo:
+## 📄 License
 
-```bash
-python main.py stats
-```
-
----
-
-## 🗄️ Cấu trúc bảng SQLite (`data/jobs.db`)
-
-- **Bảng `jobs`**:
-  - `id`: Khóa chính tự tăng.
-  - `source`: Tên nguồn (`itviec`, `careerviet`, `topcv`, `facebook`).
-  - `job_hash`: Chuỗi băm duy nhất để chống lưu trùng lặp.
-  - `title`: Tiêu đề công việc.
-  - `company`: Tên công ty/nhà tuyển dụng.
-  - `location`: Địa điểm làm việc (Hà Nội, TP.HCM, Remote...).
-  - `salary_raw`, `salary_min`, `salary_max`, `salary_currency`: Thông tin mức lương.
-  - `job_description`, `requirements`, `benefits`: Chi tiết JD.
-  - `job_url`: Đường link bài tuyển dụng gốc.
-  - `keyword_searched`: Từ khóa đã dùng để tìm kiếm.
-
-- **Bảng `reports`**:
-  - `id`: Khóa chính.
-  - `keyword`: Vị trí phân tích.
-  - `total_jobs_analyzed`: Số lượng tin đã đưa vào LLM.
-  - `llm_model`: Mô hình LLM đã dùng (`gemini-2.5-flash`...).
-  - `summary_markdown`: Nội dung báo cáo đầy đủ.
-  - `created_at`: Thời gian xuất báo cáo.
-
----
-
-## 💡 Mở rộng
-
-- **Đổi sang OpenAI hoặc Ollama**: Chỉ cần thay đổi trong `.env` (`DEFAULT_LLM_PROVIDER=openai` hoặc `ollama`).
-- **Thêm nguồn cào mới**: Kế thừa lớp `BaseCrawler` trong `crawlers/base.py` và đăng ký vào `crawlers/factory.py`.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.

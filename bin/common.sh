@@ -22,7 +22,7 @@ elif command -v uv &> /dev/null; then
 elif command -v python3 &> /dev/null; then
     PYTHON_CMD="python3"
 else
-    echo -e "${RED}[ERROR] Không tìm thấy Python 3 hoặc môi trường ảo .venv!${NC}"
-    echo -e "${YELLOW}[HINT] Hãy chạy './bin/setup_env.sh' để tự động cài đặt môi trường bằng uv.${NC}"
+    echo -e "${RED}[ERROR] Python 3 or virtual environment .venv not found!${NC}"
+    echo -e "${YELLOW}[HINT] Run './bin/setup_env.sh' to automatically bootstrap the environment with uv.${NC}"
     exit 1
 fi
