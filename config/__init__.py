@@ -1,4 +1,4 @@
-"""Configuration package for cv_scan."""
+"""Configuration package for JobSonar."""
 from .settings import settings
 
 __all__ = ["settings"]

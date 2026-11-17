@@ -1,4 +1,4 @@
-"""Command-line interface (CLI) for cv_scan."""
+"""Command-line interface (CLI) for JobSonar."""
 import sys
 import argparse
 from typing import List

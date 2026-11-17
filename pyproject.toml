@@ -1,7 +1,7 @@
 [project]
-name = "cv-scan"
+name = "jobsonar"
 version = "1.0.0"
-description = "Vietnam Job Market Scanner & AI Synthesizer"
+description = "JobSonar: Autonomous Tech Job Market Scanner & AI Synthesizer"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

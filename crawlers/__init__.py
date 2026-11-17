@@ -1,4 +1,4 @@
-"""Crawlers package for cv_scan."""
+"""Crawlers package for JobSonar."""
 from .base import BaseCrawler
 from .itviec import ITViecCrawler
 from .careerviet import CareerVietCrawler

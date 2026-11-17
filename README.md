@@ -1,4 +1,4 @@
-# 🔍 cv_EasyScan: Tech Job Market Scanner & AI Synthesizer
+# 📡 JobSonar: Tech Job Market Scanner & AI Synthesizer
 
 A modern, high-performance toolkit to discover, crawl, normalize, and analyze tech and remote job postings across premier recruitment platforms and social networks (**ITviec**, **CareerViet**, **Remotive**, **TopCV**, **JoyWork**, **LinkedIn**, **Glassdoor**, **FlexJobs**, **Facebook**).
 
@@ -49,7 +49,7 @@ Equipped with an **embedded SQLite3 engine** featuring intelligent deduplication
 ## 📁 Repository Structure
 
 ```text
-cv_scan/
+JobSonar/
 ├── config/                  # App settings and dynamic sources configuration
 │   ├── settings.py          # Environment loader, timeouts, default models
 │   └── sources_config.py    # Recruitment sources metadata and toggle manager
@@ -118,8 +118,8 @@ cv_scan/
 #### Method A: One-Click Setup with `uv` (Recommended)
 ```bash
 # Clone the repository
-git clone git@github.com:andryD-ai/cv_EasyScan.git
-cd cv_EasyScan
+git clone git@github.com:andryD-ai/JobSonar.git
+cd JobSonar
 
 # Run the automated setup script
 ./bin/setup_env.sh

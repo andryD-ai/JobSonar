@@ -2,7 +2,7 @@
 import logging
 from rich.logging import RichHandler
 
-def setup_logger(name: str = "cv_scan", level: int = logging.INFO) -> logging.Logger:
+def setup_logger(name: str = "jobsonar", level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         logger.setLevel(level)

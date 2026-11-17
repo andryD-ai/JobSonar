@@ -1,4 +1,4 @@
-# 📖 cv_EasyScan User Guide & Quickstart Reference
+# 📖 JobSonar User Guide & Quickstart Reference
 
 Comprehensive guide to executing crawlers, filtering jobs, generating AI market reports, and configuring sources.
 

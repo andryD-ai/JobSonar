@@ -19,7 +19,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 echo -e "${CYAN}====================================================${NC}"
-echo -e "${CYAN}     cv_EasyScan Environment Bootstrap (UV)         ${NC}"
+echo -e "${CYAN}        JobSonar Environment Bootstrap (UV)          ${NC}"
 echo -e "${CYAN}====================================================${NC}\n"
 
 # 1. Verify uv installation

@@ -1,4 +1,4 @@
-"""Utils package for cv_scan."""
+"""Utils package for JobSonar."""
 from .logger import logger
 from .text_cleaner import (
     clean_html,

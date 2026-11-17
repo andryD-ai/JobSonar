@@ -1,4 +1,4 @@
-"""Database package for cv_scan."""
+"""Database package for JobSonar."""
 from .database import db
 from .models import JobItem, ReportItem
 from .repository import job_repo, report_repo

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Interactive Control Menu for cv_EasyScan services
+# Interactive Control Menu for JobSonar services
 # ==============================================================================
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
@@ -8,7 +8,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 while true; do
     clear
     echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║     🔍 cv_EasyScan: TECH JOB SCANNER & AI SYNTHESIZER        ║${NC}"
+    echo -e "${CYAN}║     📡 JobSonar: TECH JOB SCANNER & AI SYNTHESIZER           ║${NC}"
     echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
     echo -e "${YELLOW}Please select an action to execute:${NC}\n"
     echo -e "  ${GREEN}1.${NC} Crawl jobs from recruitment boards (ITviec, CareerViet, Remotive...)"
